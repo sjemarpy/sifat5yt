@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5, user-scalable=yes" />
-  <title>SIFAT YT - Official Store & Enterprise HTML to APK Builder</title>
+  <title>SIFAT YT - Official Store & Real HTML to APK Builder</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,12 +67,13 @@
       font-size: 12px; font-weight: 600; color: #1e293b; margin-top: 6px;
       width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
+    .app-icon-card__rating { font-size: 11px; font-weight: 700; color: #f59e0b; display: inline-flex; align-items: center; gap: 2px; margin-top: 2px; }
 
     .page-view { display: none; }
     .page-view.active { display: block; animation: fadeIn .2s ease forwards; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ==================== BUILDER STYLES ==================== */
+    /* Builder Container */
     .cyber-builder-wrapper {
       background-color: var(--bg-base);
       background-image: 
@@ -173,7 +174,6 @@
       display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
     }
     .btn-submit:hover { background: #33eeff; transform: translateY(-2px); box-shadow: 0 0 25px rgba(0, 229, 255, 0.5); }
-    .btn-submit:active { transform: translateY(0); }
 
     .loading-overlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.88);
@@ -474,7 +474,7 @@
                 <div class="pro-tab-content" id="tab-preview">
                   <div class="section-head"><div><b>Instant preview</b><span>Preview your first HTML page</span></div><button id="refreshPreview" class="mini-btn" type="button">↻ Refresh</button></div>
                   <div class="device-wrap"><div class="device-notch"></div><iframe id="livePreview" title="Live preview" sandbox="allow-scripts allow-forms allow-modals"></iframe></div>
-                  <div class="preview-note">Preview runs locally in your browser. Your APK build uses the verified server pipeline.</div>
+                  <div class="preview-note">Preview runs locally in your browser.</div>
                 </div>
               </section>
 
@@ -641,7 +641,7 @@
     </div>
   </div>
 
-  <!-- ==================== FILE 2 CYBER LOADING OVERLAY ==================== -->
+  <!-- ==================== CYBER LOADING OVERLAY ==================== -->
   <div class="loading-overlay" id="loadingOverlay">
     <div id="wifi-loader">
       <svg class="circle-outer" viewBox="0 0 86 86"><circle class="back" cx="43" cy="43" r="40"></circle><circle class="front" cx="43" cy="43" r="40"></circle></svg>
@@ -649,10 +649,10 @@
       <svg class="circle-inner" viewBox="0 0 34 34"><circle class="back" cx="17" cy="17" r="14"></circle><circle class="front" cx="17" cy="17" r="14"></circle></svg>
     </div>
     <div class="loading-text" id="overlayTitle">Processing</div>
-    <div class="loading-subtext" id="overlayDesc">Please wait while we set up your environment.</div>
+    <div class="loading-subtext" id="overlayDesc">Please wait while we compile your application.</div>
   </div>
 
-  <!-- ==================== FILE 2 CUSTOM MODAL ==================== -->
+  <!-- ==================== CUSTOM MODAL ==================== -->
   <div class="modal-overlay" id="customModal">
     <div class="custom-modal">
       <svg class="modal-icon warning" id="modalIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
@@ -693,7 +693,7 @@
 
   <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs px-5 py-2.5 rounded-full shadow-2xl opacity-0 pointer-events-none transition-all duration-300 z-50"></div>
 
-  <!-- ==================== SCRIPT 1: STORE LOGIC ==================== -->
+  <!-- ==================== SCRIPT 1: STORE & DATABASE LOGIC ==================== -->
   <script>
     const _ADMIN_HASH = btoa('py.py.io');
 
@@ -848,549 +848,4 @@
           aCard.onclick = () => openAppDetails(app.id);
           aCard.innerHTML = `
             <div class="w-13 h-13 rounded-2xl overflow-hidden shrink-0 bg-slate-50 border border-slate-100">
-              <img src="${app.iconURL || ''}" class="w-12 h-12 rounded-xl object-cover">
-            </div>
-            <div class="flex-1 min-w-0">
-              <h3 class="text-xs font-bold text-slate-900 truncate">${app.name}</h3>
-              <div class="text-[11px] text-slate-400 my-0.5">4.9 ★ • ${app.fileSize || 'Verified'}</div>
-              <div class="text-[10px] font-bold text-primary">Free Download</div>
-            </div>
-          `;
-          if(aCount <= 6) hApps.appendChild(aCard);
-          allApps.appendChild(aCard.cloneNode(true));
-        }
-      });
-
-      document.getElementById('allAppsCount').textContent = aCount + ' Apps';
-      document.getElementById('allGamesCount').textContent = gCount + ' Games';
-    }
-
-    function openAppDetails(id){
-      const app = appsCache[id];
-      if(!app) return;
-
-      document.getElementById('mIcon').src = app.iconURL || '';
-      document.getElementById('mName').textContent = app.name || 'App';
-      document.getElementById('mPkg').textContent = app.packageName || 'com.app';
-      document.getElementById('mSize').textContent = app.fileSize || 'Verified';
-
-      const btn = document.getElementById('mDownloadBtn');
-      btn.onclick = () => {
-        const downloadUrl = app.apkUrl || app.apkData;
-        if(!downloadUrl){ toast("ডাউনলোড লিংক পাওয়া যায়নি"); return; }
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = (app.name || 'app').replace(/\s+/g, '_') + '.apk';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        closeModal('appModal');
-      };
-      openModal('appModal');
-    }
-
-    // USER UPLOAD
-    document.getElementById('userUploadForm').addEventListener('submit', async function(e){
-      e.preventDefault();
-      const name = document.getElementById('uName').value.trim();
-      const pkg = document.getElementById('uPkg').value.trim();
-      const cat = document.getElementById('uCat').value;
-      const iconF = document.getElementById('uIcon').files[0];
-      const rawFile = document.getElementById('uFile').files[0];
-
-      const btn = document.getElementById('uSubmitBtn');
-      btn.disabled = true; btn.textContent = 'Uploading Genuine APK...';
-
-      try {
-        const iconB64 = await compressImageToBase64(iconF);
-        const fileB64 = await fileToBase64(rawFile);
-        const id = db.ref('apps').push().key;
-
-        await db.ref('apps/' + id).set({
-          name, packageName: pkg, category: cat,
-          fileSize: (rawFile.size / (1024*1024)).toFixed(2) + ' MB',
-          iconURL: iconB64, apkData: fileB64, status: 'approved',
-          createdAt: firebase.database.ServerValue.TIMESTAMP
-        });
-
-        toast('অ্যাপ সফলভাবে লাইভ স্টোরে যুক্ত হয়েছে!');
-        this.reset();
-      } catch(err){
-        toast('Upload Error: ' + err.message);
-      } finally {
-        btn.disabled = false; btn.textContent = 'Upload & Submit';
-      }
-    });
-
-    // ADMIN DIRECT PUBLISH
-    document.getElementById('adminPublishForm').addEventListener('submit', async function(e){
-      e.preventDefault();
-      const name = document.getElementById('adName').value.trim();
-      const pkg = document.getElementById('adPkg').value.trim();
-      const cat = document.getElementById('adCat').value;
-      const iconF = document.getElementById('adIcon').files[0];
-      const rawFile = document.getElementById('adFile').files[0];
-      const customUrl = document.getElementById('adUrl').value.trim();
-
-      const btn = document.getElementById('adSubmitBtn');
-      btn.disabled = true;
-
-      try {
-        const iconB64 = await compressImageToBase64(iconF);
-        let finalDownloadUrl = customUrl;
-        let size = 'Verified';
-
-        if(rawFile){
-          size = (rawFile.size / (1024*1024)).toFixed(2) + ' MB';
-          finalDownloadUrl = await fileToBase64(rawFile);
-        }
-
-        const id = db.ref('apps').push().key;
-        await db.ref('apps/' + id).set({
-          name, packageName: pkg, category: cat,
-          fileSize: size, iconURL: iconB64, apkData: finalDownloadUrl,
-          status: 'approved', createdAt: firebase.database.ServerValue.TIMESTAMP
-        });
-
-        toast('App সফলভাবে লাইভ পাবলিশ হয়েছে!');
-        this.reset();
-        closeModal('adminModal');
-      } catch(err){
-        toast('Upload Failed: ' + err.message);
-      } finally {
-        btn.disabled = false;
-      }
-    });
-
-    function loginUser(){
-      const e = document.getElementById('loginEmail').value, p = document.getElementById('loginPass').value;
-      auth.signInWithEmailAndPassword(e,p).then(() => toast('Login Successful')).catch(x => toast(x.message));
-    }
-    function registerUser(){
-      const e = document.getElementById('loginEmail').value, p = document.getElementById('loginPass').value;
-      auth.createUserWithEmailAndPassword(e,p).then(() => toast('Account Created')).catch(x => toast(x.message));
-    }
-    function logoutUser(){ auth.signOut().then(() => toast('Logged Out')); }
-
-    auth.onAuthStateChanged(u => {
-      currentUser = u;
-      if(u){
-        document.getElementById('authContainer').classList.add('hidden');
-        document.getElementById('uploadContainer').classList.remove('hidden');
-        document.getElementById('userAccountText').textContent = (u.email||'User').split('@')[0];
-      } else {
-        document.getElementById('authContainer').classList.remove('hidden');
-        document.getElementById('uploadContainer').classList.add('hidden');
-        document.getElementById('userAccountText').textContent = 'Account';
-      }
-    });
-
-    db.ref('apps').on('value', s => {
-      appsCache = s.val() || {};
-      renderStore();
-    });
-  </script>
-
-  <!-- ==================== SCRIPT 2: FILE 2 REAL ENGINE (FULL UNCORRUPTED) ==================== -->
-  <script>
-    (function(){
-      const formSection = document.getElementById('formSection');
-      const successSection = document.getElementById('successSection');
-      const iconInput = document.getElementById('iconFile');
-      const iconNameDisplay = document.getElementById('icon-name-display');
-      const iconWrapper = document.getElementById('iconWrapper');
-      const form = document.getElementById('apk-form');
-      const overlay = document.getElementById('loadingOverlay');
-      const overlayTitle = document.getElementById('overlayTitle');
-      const overlayDesc = document.getElementById('overlayDesc');
-      const customModal = document.getElementById('customModal');
-      const modalIcon = document.getElementById('modalIcon');
-      const modalTitle = document.getElementById('modalTitle');
-      const modalTextEn = document.getElementById('modalTextEn');
-      const modalTextBn = document.getElementById('modalTextBn');
-      const modalActionBtn = document.getElementById('modalActionBtn');
-      const modalCloseBtn = document.getElementById('modalCloseBtn');
-      const downloadLink = document.getElementById('download-link');
-      const addMoreBtn = document.getElementById('add-more-btn');
-      const htmlUploadsContainer = document.getElementById('html-uploads-container');
-
-      let pageCount = 1;
-      let humanInteractionScore = 0;
-      const countHuman = () => humanInteractionScore++;
-
-      window.addEventListener('click', countHuman, { passive: true });
-      window.addEventListener('keydown', countHuman, { passive: true });
-      window.addEventListener('touchstart', countHuman, { passive: true });
-      window.addEventListener('scroll', countHuman, { passive: true });
-
-      modalCloseBtn.addEventListener('click', () => {
-        customModal.classList.remove('active');
-      });
-
-      function showErrorModal(title, textEn, textBn, actionText, actionUrl){
-        modalTitle.textContent = title;
-        modalTextEn.textContent = textEn;
-        modalTextBn.textContent = textBn;
-        modalActionBtn.textContent = actionText || 'OK';
-        modalActionBtn.href = actionUrl || '#';
-        if(!actionUrl || actionUrl === '#'){
-          modalActionBtn.onclick = (e) => { e.preventDefault(); customModal.classList.remove('active'); };
-        }
-        customModal.classList.add('active');
-      }
-
-      // Drag & Drop
-      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
-        iconWrapper.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); }, false);
-      });
-
-      iconInput.addEventListener('change', function(e){
-        if(e.target.files.length > 0){
-          const file = e.target.files[0];
-          if(file.size > 5 * 1024 * 1024){
-            alert('Maximum icon size is 5MB');
-            iconInput.value = '';
-            return;
-          }
-          iconNameDisplay.textContent = file.name;
-          iconNameDisplay.classList.add('file-selected-state');
-          iconWrapper.style.borderColor = 'rgba(255,255,255,0.4)';
-        } else {
-          iconNameDisplay.textContent = 'Upload PNG Asset';
-          iconNameDisplay.classList.remove('file-selected-state');
-          iconWrapper.style.borderColor = '';
-        }
-      });
-
-      htmlUploadsContainer.addEventListener('change', function(e){
-        if(e.target.classList.contains('htmlFile')){
-          const block = e.target.closest('.html-upload-block');
-          const display = block.querySelector('.file-name-display');
-          if(e.target.files.length > 0){
-            display.textContent = e.target.files[0].name;
-            display.classList.add('file-selected-state');
-            block.querySelector('.htmlWrapper').style.borderColor = 'rgba(0,229,255,0.5)';
-          } else {
-            display.textContent = 'Upload HTML File';
-            display.classList.remove('file-selected-state');
-            block.querySelector('.htmlWrapper').style.borderColor = '';
-          }
-        }
-      });
-
-      addMoreBtn.addEventListener('click', () => {
-        if(pageCount >= 10){
-          alert('Maximum 10 pages allowed');
-          return;
-        }
-        if(pageCount === 1){
-          const firstPageName = document.querySelector('#html-uploads-container .html-upload-block .page-name-group');
-          const firstInput = document.querySelector('#html-uploads-container .html-upload-block .page-name-input');
-          if(firstPageName && firstInput){
-            firstPageName.style.display = 'block';
-            firstInput.required = true;
-          }
-        }
-
-        const newBlock = document.createElement('div');
-        newBlock.className = 'html-upload-block';
-        newBlock.setAttribute('data-index', pageCount);
-        newBlock.style = 'padding: 16px; background: rgba(0, 229, 255, 0.02); border: 1px solid rgba(0, 229, 255, 0.1); border-radius: 12px; margin-bottom: 16px; position: relative;';
-        newBlock.innerHTML = `
-          <button type="button" class="remove-page-btn" style="position: absolute; top: 12px; right: 12px; background: rgba(255, 51, 102, 0.1); border: 1px solid rgba(255, 51, 102, 0.3); color: #ff3366; border-radius: 8px; width: 28px; height: 28px; display: flex; justify-content: center; align-items: center; cursor: pointer;">&times;</button>
-          <div class="form-group page-name-group" style="margin-bottom: 12px;">
-              <label>Page Name</label>
-              <input type="text" class="form-control page-name-input" placeholder="e.g., Dashboard" required>
-          </div>
-          <div class="form-group" style="margin-bottom: 0;">
-              <label>Source Code (HTML)</label>
-              <div class="file-upload-wrapper htmlWrapper">
-                  <div class="file-upload-icon">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                      </svg>
-                  </div>
-                  <div class="file-upload-text file-name-display">Upload HTML File</div>
-                  <div class="file-upload-subtext">Single .html or .htm format</div>
-                  <input type="file" class="htmlFile" accept=".html,.htm" required>
-              </div>
-          </div>
-        `;
-        htmlUploadsContainer.appendChild(newBlock);
-        pageCount++;
-
-        if(pageCount >= 10) addMoreBtn.style.display = 'none';
-
-        newBlock.querySelector('.remove-page-btn').addEventListener('click', function(){
-          htmlUploadsContainer.removeChild(newBlock);
-          pageCount--;
-          addMoreBtn.style.display = 'inline-flex';
-          if(pageCount === 1){
-            const firstGroup = document.querySelector('#html-uploads-container .html-upload-block .page-name-group');
-            const firstInp = document.querySelector('#html-uploads-container .html-upload-block .page-name-input');
-            if(firstGroup && firstInp){
-              firstGroup.style.display = 'none';
-              firstInp.required = false;
-            }
-          }
-        });
-      });
-
-      function resizeImage(file, maxSize){
-        return new Promise(resolve => {
-          const reader = new FileReader();
-          reader.onload = e => {
-            const img = new Image();
-            img.onload = () => {
-              const canvas = document.createElement('canvas');
-              let w = img.width, h = img.height;
-              if(w > maxSize){ h = Math.round((h * maxSize) / w); w = maxSize; }
-              canvas.width = w; canvas.height = h;
-              const ctx = canvas.getContext('2d');
-              ctx.drawImage(img, 0, 0, w, h);
-              canvas.toBlob(blob => {
-                const resFile = new File([blob], file.name, { type: 'image/png', lastModified: Date.now() });
-                resolve(resFile);
-              }, 'image/png', 0.9);
-            };
-            img.src = e.target.result;
-          };
-          reader.readAsDataURL(file);
-        });
-      }
-
-      // SUBMIT & COMPILE PIPELINE (EXACT FILE 2 SERVER ENGINE)
-      form.addEventListener('submit', async function(e){
-        e.preventDefault();
-
-        const appName = document.getElementById('appName').value.trim();
-        const iconFile = iconInput.files[0];
-        const blocks = document.querySelectorAll('#html-uploads-container .html-upload-block');
-        const htmlFiles = [];
-        const pageNames = [];
-        let hasError = false;
-
-        blocks.forEach(b => {
-          const pName = b.querySelector('.page-name-input')?.value || 'index';
-          const hInput = b.querySelector('.htmlFile');
-          if(hInput && hInput.files.length > 0){
-            pageNames.push(pName);
-            htmlFiles.push(hInput.files[0]);
-          } else {
-            hasError = true;
-          }
-        });
-
-        if(!appName || htmlFiles.length === 0 || hasError){
-          alert('Please fill all required fields');
-          return;
-        }
-
-        overlay.classList.add('active');
-        overlayTitle.textContent = 'Processing Application';
-        overlayDesc.textContent = 'Uploading source assets to compiler node...';
-
-        const formData = new FormData();
-        formData.append('appName', appName);
-        htmlFiles.forEach(f => formData.append('htmlFiles', f));
-        formData.append('pageNames', JSON.stringify(pageNames));
-
-        // Pro settings
-        formData.append('packageName', document.getElementById('pkgName')?.value || 'com.sifat.app');
-        formData.append('appVersion', document.getElementById('appVersion')?.value || '1.0.0');
-        formData.append('versionCode', document.getElementById('versionCode')?.value || '1');
-        formData.append('orientation', document.getElementById('orientation')?.value || 'portrait');
-
-        if(iconFile){
-          overlayTitle.textContent = 'Optimizing Assets';
-          overlayDesc.textContent = 'Resizing icon asset...';
-          const resized = await resizeImage(iconFile, 512);
-          formData.append('appIcon', resized);
-        }
-
-        try {
-          overlayTitle.textContent = 'Connecting Server';
-          overlayDesc.textContent = 'Allocating dedicated build container...';
-
-          const API_KEY = ['F','F','X','_','S','E','C','R','E','T','_','A','P','I','_','K','E','Y','_','2','0','2','6'].join('');
-          const BASE_URL = 'https://sifat5game.onrender.com';
-
-          const res = await fetch(BASE_URL + '/api/build', {
-            method: 'POST',
-            headers: { 'x-api-key': API_KEY },
-            body: formData
-          });
-
-          if(!res.ok){
-            const txt = await res.text();
-            let errMsg = 'Build request failed';
-            try { const parsed = JSON.parse(txt); errMsg = parsed.message || txt; } catch(e){ errMsg = txt; }
-            throw new Error(errMsg);
-          }
-
-          const resData = await res.json();
-          const buildId = resData.buildId || resData.id;
-
-          // Polling status
-          const pollTimer = setInterval(async () => {
-            try {
-              const statusRes = await fetch(BASE_URL + '/api/status/' + buildId, {
-                headers: { 'x-api-key': API_KEY }
-              });
-              if(!statusRes.ok) throw new Error('Status check failed');
-              const sData = await statusRes.json();
-
-              if(sData.status === 'queue'){
-                overlayTitle.textContent = 'Queue Position: ' + (sData.position || '1');
-                overlayDesc.textContent = 'Awaiting available build node.';
-              } else if(sData.status === 'building'){
-                overlayTitle.textContent = 'Compiling APK Package';
-                overlayDesc.textContent = sData.step || 'Running Android AAPT2, D8 and APKSigner...';
-              } else if(sData.status === 'done' || sData.status === 'success'){
-                clearInterval(pollTimer);
-                overlay.classList.remove('active');
-                formSection.style.display = 'none';
-                successSection.style.display = 'flex';
-                downloadLink.href = BASE_URL + '/download/' + buildId + '?key=' + API_KEY;
-                downloadLink.setAttribute('download', appName.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.apk');
-              } else if(sData.status === 'failed'){
-                clearInterval(pollTimer);
-                throw new Error(sData.error || 'Build failed.');
-              }
-            } catch(pollErr){
-              clearInterval(pollTimer);
-              overlay.classList.remove('active');
-              showErrorModal('Error', pollErr.message, 'বিল্ড সার্ভার সংযোগে সমস্যা হয়েছে।', 'Retry', '#');
-            }
-          }, 2000);
-
-        } catch(err){
-          overlay.classList.remove('active');
-          showErrorModal('Server Error', err.message, 'রিয়েল বিল্ড সার্ভার সক্রিয় আছে কিনা চেক করুন।', 'OK', '#');
-        }
-      });
-    })();
-  </script>
-
-  <!-- ==================== SCRIPT 3: PRO UPGRADE PANEL LOGIC ==================== -->
-  <script>
-  (()=>{
-    const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
-    const form = $('#apk-form'), name = $('#appName'), icon = $('#iconFile'), preview = $('#livePreview'), pageList = $('#pageList'), drop = $('#dropZone');
-    const stateKey = 'sifat_apk_builder_draft_v2';
-    
-    function save(){
-      const d = {
-        name: name?.value||'',
-        pkg: $('#pkgName')?.value||'',
-        version: $('#appVersion')?.value||'1.0.0',
-        code: $('#versionCode')?.value||'1',
-        orientation: $('#orientation')?.value||'unspecified',
-        js: $('#jsToggle')?.checked,
-        storage: $('#storageToggle')?.checked,
-        links: $('#linksToggle')?.checked
-      };
-      localStorage.setItem(stateKey, JSON.stringify(d));
-    }
-    
-    function load(){
-      try{
-        const d = JSON.parse(localStorage.getItem(stateKey)||'{}');
-        for(const [id,val] of [['appName',d.name],['pkgName',d.pkg],['appVersion',d.version],['versionCode',d.code],['orientation',d.orientation]]){
-          const e = $('#'+id); if(e && val !== undefined) e.value = val;
-        }
-        for(const [id,val] of [['jsToggle',d.js],['storageToggle',d.storage],['linksToggle',d.links]]){
-          const e = $('#'+id); if(e && val !== undefined) e.checked = val;
-        }
-      }catch(e){}
-    }
-    
-    function refreshPages(){
-      const blocks = $$('#html-uploads-container .html-upload-block');
-      if(!pageList) return;
-      pageList.innerHTML = '';
-      blocks.forEach((b,i) => {
-        const f = b.querySelector('.htmlFile')?.files?.[0];
-        const n = b.querySelector('.page-name-input')?.value || ('Page '+(i+1));
-        const el = document.createElement('div');
-        el.className = 'page-chip';
-        el.innerHTML = '<span class="page-num">'+(i+1)+'</span><b></b><small></small>';
-        el.querySelector('b').textContent = n;
-        el.querySelector('small').textContent = f ? f.name : 'Not uploaded';
-        pageList.appendChild(el);
-      });
-      if($('#pageCounter')) $('#pageCounter').textContent = blocks.length + ' / 10';
-    }
-    
-    function check(){
-      const has = $$('.htmlFile').some(x => x.files?.length);
-      if($('#checkFile')){
-        $('#checkFile').textContent = (has ? '✓' : '○') + ' HTML';
-        $('#checkFile').classList.toggle('ok', has);
-      }
-      const ok = !!name?.value.trim();
-      if($('#checkName')){
-        $('#checkName').textContent = (ok ? '✓' : '○') + ' App name';
-        $('#checkName').classList.toggle('ok', ok);
-      }
-      if($('#checkStatus')) $('#checkStatus').textContent = has && ok ? 'Ready to build' : 'Waiting for HTML';
-    }
-    
-    function previewFirst(){
-      const f = $$('.htmlFile')[0]?.files?.[0];
-      if(!preview) return;
-      if(!f){
-        preview.srcdoc = '<div style="font-family:sans-serif;padding:30px;text-align:center;color:#667">Upload an HTML file to preview it.</div>';
-        return;
-      }
-      const r = new FileReader();
-      r.onload = () => preview.srcdoc = r.result;
-      r.readAsText(f);
-    }
-    
-    $$('.pro-tab').forEach(btn => btn.addEventListener('click', () => {
-      $$('.pro-tab').forEach(x => x.classList.remove('active'));
-      $$('.pro-tab-content').forEach(x => x.classList.remove('active'));
-      btn.classList.add('active');
-      const target = $('#tab-' + btn.dataset.tab);
-      if(target) target.classList.add('active');
-      if(btn.dataset.tab === 'preview') previewFirst();
-    }));
-    
-    [name, $('#pkgName'), $('#appVersion'), $('#versionCode'), $('#orientation'), $('#jsToggle'), $('#storageToggle'), $('#linksToggle')].filter(Boolean).forEach(e => e.addEventListener('input', save));
-    
-    document.addEventListener('change', e => {
-      if(e.target.matches('.htmlFile, .page-name-input, #iconFile')){
-        refreshPages(); check(); previewFirst(); save();
-      }
-    });
-    
-    $('#refreshPreview')?.addEventListener('click', previewFirst);
-    
-    drop?.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag'); });
-    drop?.addEventListener('dragleave', () => drop.classList.remove('drag'));
-    drop?.addEventListener('drop', e => {
-      e.preventDefault();
-      drop.classList.remove('drag');
-      const files = [...e.dataTransfer.files].filter(f => /\.html?$/i.test(f.name));
-      const inputs = $$('.htmlFile');
-      let slot = inputs.find(x => !x.files.length);
-      if(files[0] && slot){
-        const dt = new DataTransfer();
-        dt.items.add(files[0]);
-        slot.files = dt.files;
-        slot.dispatchEvent(new Event('change', { bubbles: true }));
-      }
-    });
-    
-    const mo = new MutationObserver(() => { refreshPages(); check(); });
-    const c = $('#html-uploads-container');
-    if(c) mo.observe(c, { childList: true, subtree: true });
-    
-    form?.addEventListener('submit', () => { save(); refreshPages(); check(); });
-    load();
-    setTimeout(() => { refreshPages(); check(); previewFirst(); }, 200);
-  })();
-  </script>
-</body>
-</html>
+              <img src="${app.iconURL || ''}" class="w-12 h-12 rounded-xl obj
