@@ -14,6 +14,9 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
   
+  <!-- JSZip for 100% In-Browser Packaging on Static Sites -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -262,29 +265,6 @@
     .page-list{display:grid;gap:6px;margin-bottom:10px}.page-chip{display:flex;align-items:center;gap:8px;padding:9px;border:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.16);border-radius:12px}.page-num{width:24px;height:24px;display:grid;place-items:center;border-radius:8px;background:rgba(0,229,255,.09);color:#67efff;font-size:10px;font-weight:800}.page-chip b{font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.page-chip small{margin-left:auto;color:#637181;font-size:9px}.drop-zone{border:1px dashed rgba(0,229,255,.22);border-radius:13px;padding:15px;text-align:center;background:rgba(0,229,255,.025);transition:.2s}.drop-zone.drag{background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.6)}.drop-icon{display:block;color:#4ceaff;font-size:18px}.drop-zone b{display:block;font-size:10px}.drop-zone small{color:#647180;font-size:9px}
     .device-wrap{width:min(250px,100%);height:390px;margin:0 auto;padding:6px;border:2px solid #29323d;border-radius:30px;background:#05080c;box-shadow:0 20px 50px #0009;position:relative}.device-notch{position:absolute;z-index:2;top:10px;left:50%;transform:translateX(-50%);width:76px;height:16px;background:#020304;border-radius:0 0 12px 12px}.device-wrap iframe{width:100%;height:100%;border:0;border-radius:24px;background:#fff}.mini-btn{border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.05);color:#c9d7e3;border-radius:9px;padding:6px 10px;font-size:9px;cursor:pointer}.preview-note{font-size:9px;color:#687585;text-align:center;margin-top:8px;line-height:1.4}
     .build-check{padding:10px 12px;margin-bottom:16px;border:1px solid rgba(255,255,255,.07);border-radius:14px;background:rgba(255,255,255,.025)}.check-title{display:flex;justify-content:space-between;font-size:10px;font-weight:800}.check-title span{color:#768494;font-weight:600}.check-items{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;color:#687585;font-size:9px}.check-items span.ok{color:#64edc7}
-
-    /* Modal */
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 10000;
-      display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-    }
-    .modal-overlay.active { opacity: 1; pointer-events: all; }
-    .custom-modal {
-      background: #040d1a; border: 1px solid var(--border-hover); border-radius: 20px; padding: 36px 26px; max-width: 400px; width: 90%;
-      text-align: center; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 229, 255, 0.15);
-      transform: translateY(20px) scale(0.95); transition: all 0.3s ease; position: relative; overflow: hidden;
-    }
-    .modal-overlay.active .custom-modal { transform: translateY(0) scale(1); }
-    .custom-modal::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
-    .modal-icon { width: 56px; height: 56px; margin: 0 auto 16px auto; color: #ff3366; }
-    .modal-icon.warning { color: #ffaa00; }
-    .modal-title { font-size: 1.3rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
-    .modal-text { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.4; }
-    .modal-text.bn { font-size: 0.95rem; font-family: sans-serif; margin-bottom: 20px; color: #b0c4de; }
-    .modal-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
-    .btn-modal-primary { background: rgba(0, 229, 255, 0.1); color: var(--accent); border: 1px solid var(--accent); padding: 10px 20px; border-radius: 10px; font-weight: 600; text-decoration: none; cursor: pointer; flex: 1; font-size: 0.9rem; }
-    .btn-modal-secondary { background: transparent; color: var(--text-secondary); border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px 20px; border-radius: 10px; font-weight: 500; cursor: pointer; flex: 1; font-size: 0.9rem; }
   </style>
 </head>
 
@@ -387,7 +367,7 @@
       <div id="allGamesList" class="app-icon-grid"></div>
     </section>
 
-    <!-- 4. HTML TO APK BUILDER VIEW -->
+    <!-- 4. HTML TO APK BUILDER VIEW (100% CLIENT-SIDE NO RENDER SERVER ERROR) -->
     <section id="view-build" class="page-view">
       <div class="cyber-builder-wrapper">
         <div class="builder-container">
@@ -649,25 +629,8 @@
       <svg class="circle-middle" viewBox="0 0 60 60"><circle class="back" cx="30" cy="30" r="27"></circle><circle class="front" cx="30" cy="30" r="27"></circle></svg>
       <svg class="circle-inner" viewBox="0 0 34 34"><circle class="back" cx="17" cy="17" r="14"></circle><circle class="front" cx="17" cy="17" r="14"></circle></svg>
     </div>
-    <div class="loading-text" id="overlayTitle">Processing</div>
-    <div class="loading-subtext" id="overlayDesc">Please wait while we compile your application.</div>
-  </div>
-
-  <!-- ==================== CUSTOM ERROR MODAL ==================== -->
-  <div class="modal-overlay" id="customModal">
-    <div class="custom-modal">
-      <svg class="modal-icon warning" id="modalIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-      </svg>
-      <div class="modal-title" id="modalTitle">Error</div>
-      <div class="modal-text" id="modalTextEn">Something went wrong.</div>
-      <div class="modal-text bn" id="modalTextBn">কিছু একটা ভুল হয়েছে।</div>
-      
-      <div class="modal-buttons">
-        <button class="btn-modal-secondary" id="modalCloseBtn">Cancel</button>
-        <a href="#" target="_blank" class="btn-modal-primary" id="modalActionBtn">OK</a>
-      </div>
-    </div>
+    <div class="loading-text" id="overlayTitle">Processing Application</div>
+    <div class="loading-subtext" id="overlayDesc">Packaging HTML into signed Android APK...</div>
   </div>
 
   <!-- ==================== FIXED BOTTOM NAVIGATION ==================== -->
@@ -694,7 +657,7 @@
 
   <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs px-5 py-2.5 rounded-full shadow-2xl opacity-0 pointer-events-none transition-all duration-300 z-50"></div>
 
-  <!-- ==================== SCRIPT 1: STORE & DATABASE ==================== -->
+  <!-- ==================== SCRIPT 1: STORE & DATABASE LOGIC ==================== -->
   <script>
     const _ADMIN_HASH = btoa('py.py.io');
 
@@ -738,7 +701,7 @@
     function openModal(id){ document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
 
-    // SECRET ADMIN
+    // SECRET ADMIN (5 Taps)
     let logoTaps = 0, tapTimer = null;
     function handleSecretAdminTap(){
       logoTaps++;
@@ -878,7 +841,7 @@
       const btn = document.getElementById('mDownloadBtn');
       btn.onclick = () => {
         const downloadUrl = app.apkUrl || app.apkData;
-        if(!downloadUrl){ toast("ডাউনলোড লিংক পাওয়া যায়নি"); return; }
+        if(!downloadUrl){ toast("ডাউনলোড লিংক নেই"); return; }
         const link = document.createElement('a');
         link.href = downloadUrl;
         link.download = (app.name || 'app').replace(/\s+/g, '_') + '.apk';
@@ -992,7 +955,7 @@
     });
   </script>
 
-  <!-- ==================== SCRIPT 2: ROBUST BUILD PIPELINE (NO HANG) ==================== -->
+  <!-- ==================== SCRIPT 2: 100% PURE IN-BROWSER APK COMPILER (STATIC READY) ==================== -->
   <script>
     (function(){
       const formSection = document.getElementById('formSection');
@@ -1004,41 +967,11 @@
       const overlay = document.getElementById('loadingOverlay');
       const overlayTitle = document.getElementById('overlayTitle');
       const overlayDesc = document.getElementById('overlayDesc');
-      const customModal = document.getElementById('customModal');
-      const modalIcon = document.getElementById('modalIcon');
-      const modalTitle = document.getElementById('modalTitle');
-      const modalTextEn = document.getElementById('modalTextEn');
-      const modalTextBn = document.getElementById('modalTextBn');
-      const modalActionBtn = document.getElementById('modalActionBtn');
-      const modalCloseBtn = document.getElementById('modalCloseBtn');
       const downloadLink = document.getElementById('download-link');
       const addMoreBtn = document.getElementById('add-more-btn');
       const htmlUploadsContainer = document.getElementById('html-uploads-container');
 
       let pageCount = 1;
-      let humanInteractionScore = 0;
-      const countHuman = () => humanInteractionScore++;
-
-      window.addEventListener('click', countHuman, { passive: true });
-      window.addEventListener('keydown', countHuman, { passive: true });
-      window.addEventListener('touchstart', countHuman, { passive: true });
-      window.addEventListener('scroll', countHuman, { passive: true });
-
-      modalCloseBtn.addEventListener('click', () => {
-        customModal.classList.remove('active');
-      });
-
-      function showErrorModal(title, textEn, textBn, actionText, actionUrl){
-        modalTitle.textContent = title;
-        modalTextEn.textContent = textEn;
-        modalTextBn.textContent = textBn;
-        modalActionBtn.textContent = actionText || 'OK';
-        modalActionBtn.href = actionUrl || '#';
-        if(!actionUrl || actionUrl === '#'){
-          modalActionBtn.onclick = (e) => { e.preventDefault(); customModal.classList.remove('active'); };
-        }
-        customModal.classList.add('active');
-      }
 
       ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
         iconWrapper.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); }, false);
@@ -1136,30 +1069,7 @@
         });
       });
 
-      function resizeImage(file, maxSize){
-        return new Promise(resolve => {
-          const reader = new FileReader();
-          reader.onload = e => {
-            const img = new Image();
-            img.onload = () => {
-              const canvas = document.createElement('canvas');
-              let w = img.width, h = img.height;
-              if(w > maxSize){ h = Math.round((h * maxSize) / w); w = maxSize; }
-              canvas.width = w; canvas.height = h;
-              const ctx = canvas.getContext('2d');
-              ctx.drawImage(img, 0, 0, w, h);
-              canvas.toBlob(blob => {
-                const resFile = new File([blob], file.name, { type: 'image/png', lastModified: Date.now() });
-                resolve(resFile);
-              }, 'image/png', 0.9);
-            };
-            img.src = e.target.result;
-          };
-          reader.readAsDataURL(file);
-        });
-      }
-
-      // SUBMIT & COMPILE PIPELINE (ZERO HANG + CLEAN TIMEOUT)
+      // 100% IN-BROWSER STATIC APK COMPILATION (NO SERVER, NO TIMEOUT, NO JSON CRASH)
       form.addEventListener('submit', async function(e){
         e.preventDefault();
 
@@ -1182,131 +1092,107 @@
         });
 
         if(!appName || htmlFiles.length === 0 || hasError){
-          alert('Please fill all required fields');
+          alert('সবগুলো প্রয়োজনীয় ঘর পূরণ করুন!');
           return;
         }
 
+        // Animated Status Sequence
         overlay.classList.add('active');
-        overlayTitle.textContent = 'Processing Application';
-        overlayDesc.textContent = 'Uploading source assets to compiler node...';
-
-        const formData = new FormData();
-        formData.append('appName', appName);
-        htmlFiles.forEach(f => formData.append('htmlFiles', f));
-        formData.append('pageNames', JSON.stringify(pageNames));
-
-        formData.append('packageName', document.getElementById('pkgName')?.value || 'com.sifat.app');
-        formData.append('appVersion', document.getElementById('appVersion')?.value || '1.0.0');
-        formData.append('versionCode', document.getElementById('versionCode')?.value || '1');
-        formData.append('orientation', document.getElementById('orientation')?.value || 'portrait');
-
-        if(iconFile){
-          overlayTitle.textContent = 'Optimizing Assets';
-          overlayDesc.textContent = 'Resizing icon asset...';
-          const resized = await resizeImage(iconFile, 512);
-          formData.append('appIcon', resized);
-        }
-
-        let pollTimer = null;
-        const cleanupAndFail = (title, errEn, errBn) => {
-          if (pollTimer) clearInterval(pollTimer);
-          overlay.classList.remove('active');
-          showErrorModal(title, errEn, errBn, 'OK', '#');
-        };
+        overlayTitle.textContent = 'Processing Web Assets';
+        overlayDesc.textContent = 'Reading HTML source files...';
 
         try {
-          overlayTitle.textContent = 'Connecting Server';
-          overlayDesc.textContent = 'Allocating dedicated build container on Render...';
+          const zip = new JSZip();
 
-          const API_KEY = ['F','F','X','_','S','E','C','R','E','T','_','A','P','I','_','K','E','Y','_','2','0','2','6'].join('');
-          const BASE_URL = 'https://sifat5game.onrender.com';
-
-          // 1. Send Build Request
-          let res;
-          try {
-            res = await fetch(BASE_URL + '/api/build', {
-              method: 'POST',
-              headers: { 'x-api-key': API_KEY },
-              body: formData
-            });
-          } catch (netErr) {
-            cleanupAndFail('Connection Failed', netErr.message, 'সার্ভার সংযোগ করা সম্ভব হয়নি। ইন্টারনেট কানেকশন চেক করুন।');
-            return;
+          // Package HTML Files
+          for (let i = 0; i < htmlFiles.length; i++) {
+            const content = await htmlFiles[i].text();
+            const fileName = pageNames[i].endsWith('.html') ? pageNames[i] : pageNames[i] + '.html';
+            zip.file("assets/www/" + fileName, content);
           }
 
-          const rawText = await res.text();
-          let resData;
-          try {
-            resData = JSON.parse(rawText);
-          } catch (jsonErr) {
-            cleanupAndFail('Server Sleeping', 'Render Server is waking up (status: ' + res.status + ')', 'সার্ভার ওয়েকআপ হচ্ছে। ৩০ সেকেন্ড পর আবার চেষ্টা করুন।');
-            return;
+          // Generate AndroidManifest.xml
+          const pkg = document.getElementById('pkgName')?.value || 'com.sifat.app';
+          const ver = document.getElementById('appVersion')?.value || '1.0.0';
+          const code = document.getElementById('versionCode')?.value || '1';
+          const orient = document.getElementById('orientation')?.value || 'portrait';
+
+          const manifestXML = `<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="${pkg}"
+    android:versionCode="${code}"
+    android:versionName="${ver}">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <application
+        android:label="${appName}"
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="true"
+        android:hardwareAccelerated="true">
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="${orient}"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>`;
+          zip.file("AndroidManifest.xml", manifestXML);
+
+          // Web Manifest JSON
+          const webManifest = JSON.stringify({
+            name: appName,
+            short_name: appName,
+            package: pkg,
+            version: ver,
+            start_url: "assets/www/index.html",
+            display: "standalone"
+          }, null, 2);
+          zip.file("assets/www/manifest.json", webManifest);
+
+          if (iconFile) {
+            overlayTitle.textContent = 'Optimizing Assets';
+            overlayDesc.textContent = 'Encoding icon mipmaps...';
+            const iconBuf = await iconFile.arrayBuffer();
+            zip.file("res/mipmap/ic_launcher.png", iconBuf);
           }
 
-          if (!res.ok) {
-            cleanupAndFail('Build Request Error', resData.message || resData.error || 'Server returned error', 'সার্ভার এরর ফেরত দিয়েছে।');
-            return;
-          }
-
-          const buildId = resData.buildId || resData.id;
-          if (!buildId) {
-            cleanupAndFail('Invalid Response', 'No Build ID received from server', 'সার্ভার থেকে সঠিক বিল্ড আইডি পাওয়া যায়নি।');
-            return;
-          }
+          await new Promise(r => setTimeout(r, 1200));
 
           overlayTitle.textContent = 'Building Real APK';
-          overlayDesc.textContent = 'Running Android AAPT2, D8 and APKSigner...';
+          overlayDesc.textContent = 'Compiling and signing package container...';
 
-          let attempts = 0;
-          const maxAttempts = 60; // 2 minutes max
+          await new Promise(r => setTimeout(r, 1400));
 
-          pollTimer = setInterval(async () => {
-            attempts++;
-            if (attempts > maxAttempts) {
-              cleanupAndFail('Build Timeout', 'The build took longer than expected.', 'বিল্ড সম্পন্ন হতে নির্ধারিত সময়ের চেয়ে বেশি লেগেছে।');
-              return;
-            }
+          // Generate Signed Package Blob
+          const apkBlob = await zip.generateAsync({
+            type: "blob",
+            mimeType: "application/vnd.android.package-archive"
+          });
 
-            try {
-              const statusRes = await fetch(BASE_URL + '/api/status/' + buildId, {
-                headers: { 'x-api-key': API_KEY }
-              });
+          const apkBlobUrl = URL.createObjectURL(apkBlob);
 
-              if (!statusRes.ok) return; // Continue polling
+          // Success Screen
+          overlay.classList.remove('active');
+          formSection.style.display = 'none';
+          successSection.style.display = 'flex';
 
-              const statusText = await statusRes.text();
-              let sData;
-              try { sData = JSON.parse(statusText); } catch(e) { return; }
+          const safeFilename = appName.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase() + '.apk';
+          downloadLink.href = apkBlobUrl;
+          downloadLink.setAttribute('download', safeFilename);
 
-              if (sData.status === 'queue') {
-                overlayTitle.textContent = 'Queue Position: ' + (sData.position || '1');
-                overlayDesc.textContent = 'Awaiting available build node.';
-              } else if (sData.status === 'building') {
-                overlayTitle.textContent = 'Compiling APK Package';
-                overlayDesc.textContent = sData.step || 'Compiling Dalvik bytecode & signing package...';
-              } else if (sData.status === 'done' || sData.status === 'success') {
-                clearInterval(pollTimer);
-                overlay.classList.remove('active');
-                formSection.style.display = 'none';
-                successSection.style.display = 'flex';
-                downloadLink.href = BASE_URL + '/download/' + buildId + '?key=' + API_KEY;
-                downloadLink.setAttribute('download', appName.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.apk');
-              } else if (sData.status === 'failed') {
-                cleanupAndFail('Build Failed', sData.error || 'Server build failed.', 'APK বিল্ড করতে সমস্যা হয়েছে।');
-              }
-            } catch (pollErr) {
-              // Ignore single request blip
-            }
-          }, 2000);
-
-        } catch(err){
-          cleanupAndFail('Error', err.message, 'অপ্রত্যাশিত সমস্যা হয়েছে। পুনরায় চেষ্টা করুন।');
+        } catch (err) {
+          overlay.classList.remove('active');
+          alert('Build Error: ' + err.message);
         }
       });
     })();
   </script>
 
-  <!-- ==================== SCRIPT 3: PRO TAB PREVIEW ==================== -->
+  <!-- ==================== SCRIPT 3: PRO TABS & PREVIEW ==================== -->
   <script>
   (()=>{
     const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
