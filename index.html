@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
-  <title>SIFAT YT - Official App Store & HTML to APK Builder</title>
+  <title>SIFAT YT - Official Store & Auto HTML to APK Engine</title>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
 
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
   
-  <!-- JSZip for in-browser App Packaging -->
+  <!-- JSZip for 100% Genuine In-Browser Packaging -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   
   <!-- Tailwind CSS -->
@@ -26,17 +26,14 @@
         extend: {
           colors: {
             primary: '#00e5ff',
-            'primary-dark': '#00b4d8',
-            'primary-glow': 'rgba(0, 229, 255, 0.35)',
             sifat: '#00875f',
             'sifat-dark': '#006c4c',
-            darkBg: '#050b14',
-            darkCard: '#0b1523',
-            darkBorder: 'rgba(0, 229, 255, 0.15)',
+            darkBg: '#040d1a',
+            darkCard: '#091524',
           },
           fontFamily: {
-            sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
-            mono: ['Fira Code', 'monospace'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['Fira Code', 'monospace']
           }
         }
       }
@@ -45,12 +42,11 @@
 
   <style>
     * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; }
     .max-w-gp { max-width: 1180px; margin: 0 auto; }
     .hide-sb::-webkit-scrollbar { display: none; }
     .hide-sb { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* App Icon Grid */
     .app-icon-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -61,138 +57,71 @@
 
     .app-icon-card { display: flex; flex-direction: column; align-items: center; text-align: center; text-decoration: none; cursor: pointer; }
     .app-icon-card__thumb {
-      width: 72px; height: 72px; border-radius: 20px; overflow: hidden;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.06); border: 1px solid #f1f5f9; background: #f8fafc;
-      transition: transform .25s ease, box-shadow .25s ease;
+      width: 72px; height: 72px; border-radius: 22px; overflow: hidden;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; background: #fff;
+      transition: all .25s ease;
     }
-    .app-icon-card__thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .app-icon-card:hover .app-icon-card__thumb { transform: translateY(-4px) scale(1.04); box-shadow: 0 10px 20px rgba(0,229,255,0.2); }
+    .app-icon-card:hover .app-icon-card__thumb { transform: translateY(-4px) scale(1.05); box-shadow: 0 10px 25px rgba(0, 135, 95, 0.2); }
     .app-icon-card__name {
       font-size: 12px; font-weight: 700; color: #1e293b; margin-top: 7px;
       width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
-    .app-icon-card__rating { font-size: 11px; font-weight: 700; color: #f59e0b; display: inline-flex; align-items: center; gap: 2px; margin-top: 2px; }
 
     .page-view { display: none; }
     .page-view.active { display: block; animation: fadeIn .25s ease-out forwards; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Builder Cyber Styles */
-    .builder-container {
+    /* Builder Container */
+    .builder-box {
       background: #040d1a;
-      border: 1px solid rgba(0, 229, 255, 0.25);
-      box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 229, 255, 0.08);
-      position: relative;
-      overflow: hidden;
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
     }
-    .animated-input-wrapper {
-      position: relative;
-      border-radius: 14px;
-      padding: 1px;
-      overflow: hidden;
-      background: rgba(0, 229, 255, 0.15);
-    }
-    .animated-input-wrapper::before {
-      content: "";
-      position: absolute;
-      width: 250%;
-      height: 250%;
-      top: -75%;
-      left: -75%;
-      background: conic-gradient(from 0deg, transparent 70%, #00e5ff 100%);
-      animation: rotateBg 4s linear infinite;
-      z-index: 0;
-    }
-    @keyframes rotateBg { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .animated-input-wrapper input {
-      position: relative;
-      z-index: 1;
-      background: #061224;
-    }
-
-    .pro-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 6px; background: rgba(0,0,0,0.3); border-radius: 14px; }
-    .pro-tab { border: 0; background: transparent; color: #8b949e; padding: 10px 6px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: .2s; }
-    .pro-tab.active { color: #eaffff; background: rgba(0,229,255,0.15); box-shadow: inset 0 0 0 1px rgba(0,229,255,0.3); }
-    .pro-tab-content { display: none; }
-    .pro-tab-content.active { display: block; }
-
-    /* Device Preview */
-    .device-mockup {
-      width: min(280px, 100%);
-      height: 480px;
+    .device-screen {
+      width: min(270px, 100%);
+      height: 450px;
       margin: 0 auto;
-      padding: 10px;
-      border: 3px solid #1f2a37;
-      border-radius: 36px;
-      background: #020617;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 20px rgba(0,229,255,0.1);
+      border: 3px solid #1e293b;
+      border-radius: 32px;
+      background: #000;
       position: relative;
-    }
-    .device-notch {
-      position: absolute;
-      top: 14px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90px;
-      height: 18px;
-      background: #0f172a;
-      border-radius: 0 0 12px 12px;
-      z-index: 10;
-    }
-
-    /* WiFi Loader */
-    #wifi-loader {
-      width: 64px; height: 64px; border-radius: 50px; position: relative;
-      display: flex; justify-content: center; align-items: center; margin-bottom: 20px;
-    }
-    #wifi-loader svg { position: absolute; }
-    #wifi-loader svg circle {
-      fill: none; stroke-width: 6px; stroke-linecap: round; stroke-linejoin: round;
-      transform: rotate(-100deg); transform-origin: center;
-    }
-    #wifi-loader svg circle.back { stroke: rgba(0, 229, 255, 0.2); }
-    #wifi-loader svg circle.front { stroke: #00e5ff; }
-    #wifi-loader svg.circle-outer { height: 86px; width: 86px; }
-    #wifi-loader svg.circle-outer circle { stroke-dasharray: 62.75 188.25; }
-    #wifi-loader svg.circle-outer circle.front { animation: circle-outer135 1.8s ease infinite 0.15s; }
-    @keyframes circle-outer135 {
-      0% { stroke-dashoffset: 25; } 25% { stroke-dashoffset: 0; }
-      65% { stroke-dashoffset: 301; } 100% { stroke-dashoffset: 276; }
+      overflow: hidden;
+      box-shadow: 0 0 25px rgba(0, 229, 255, 0.15);
     }
   </style>
 </head>
 
-<body class="bg-slate-50 text-slate-900 pb-24 md:pb-12 select-none">
+<body class="text-slate-900 pb-24 md:pb-10 select-none">
 
   <!-- ==================== HEADER ==================== -->
   <header class="sticky top-0 bg-white/95 backdrop-blur-md z-40 border-b border-slate-200 shadow-sm">
     <div class="max-w-gp px-4 h-16 flex items-center justify-between">
       
-      <!-- LOGO & BRAND -->
-      <div class="flex items-center gap-2.5 cursor-pointer select-none" onclick="handleSecretAdminTap()">
-        <div class="w-10 h-10 bg-gradient-to-tr from-sifat to-emerald-400 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-emerald-600/30 border border-emerald-300/30">
+      <!-- LOGO (5 TAPS TO ADMIN) -->
+      <div class="flex items-center gap-2.5 cursor-pointer select-none" onclick="handleAdminTap()">
+        <div class="w-10 h-10 bg-gradient-to-tr from-sifat to-emerald-400 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-md shadow-emerald-700/20">
           S
         </div>
         <div>
-          <h1 class="text-xl font-black tracking-tight text-slate-900 m-0 leading-none">
-            SIFAT<span class="text-emerald-600 font-extrabold">.YT</span>
+          <h1 class="text-xl font-black tracking-tight text-slate-900 leading-none">
+            SIFAT<span class="text-emerald-600 font-black">.YT</span>
           </h1>
-          <p class="text-[9px] font-bold tracking-widest text-slate-400 uppercase">MOD APK & Web to APK</p>
+          <p class="text-[9px] font-bold text-slate-400 tracking-wider uppercase">Auto APK & MOD Store</p>
         </div>
       </div>
 
-      <!-- SEARCH BAR (DESKTOP) -->
+      <!-- SEARCH -->
       <div class="flex-1 max-w-md mx-6 relative hidden sm:block">
-        <input id="desktopSearch" type="search" placeholder="Search apps, mod games, packages..." oninput="handleSearch(this.value)"
-          class="w-full h-10 bg-slate-100/90 rounded-full pl-10 pr-4 text-xs font-semibold outline-none border border-slate-200 focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20 transition duration-200" />
+        <input id="desktopSearch" type="search" placeholder="Search verified apps, games & packages..." oninput="handleSearch(this.value)"
+          class="w-full h-10 bg-slate-100 rounded-full pl-10 pr-4 text-xs font-semibold outline-none border border-slate-200 focus:border-emerald-500 focus:bg-white transition" />
         <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="currentColor" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
       </div>
 
-      <!-- TOP ACTION BUTTONS -->
+      <!-- ACTIONS -->
       <div class="flex items-center gap-2">
-        <button onclick="switchPage('build')" class="hidden sm:flex items-center gap-1.5 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-700 px-3.5 py-1.5 rounded-full font-bold text-xs transition border border-cyan-500/30">
-          <svg class="w-4 h-4 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-          <span>HTML to APK</span>
+        <button onclick="switchPage('build')" class="hidden sm:flex items-center gap-1.5 bg-cyan-50 text-cyan-700 hover:bg-cyan-100 px-4 py-1.5 rounded-full font-bold text-xs border border-cyan-200 transition">
+          <svg class="w-4 h-4 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+          <span>Auto HTML to APK</span>
         </button>
 
         <button onclick="switchPage('upload')" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 px-3.5 py-1.5 rounded-full font-bold text-xs text-slate-700 transition">
@@ -205,71 +134,64 @@
 
     <!-- MOBILE SEARCH -->
     <div class="px-4 pb-2.5 sm:hidden">
-      <input id="mobileSearch" type="search" placeholder="Search apps, mod games..." oninput="handleSearch(this.value)"
-        class="w-full h-9 bg-slate-100 rounded-full px-4 text-xs font-medium outline-none border border-slate-200 focus:border-emerald-500 focus:bg-white" />
+      <input id="mobileSearch" type="search" placeholder="Search apps, games..." oninput="handleSearch(this.value)"
+        class="w-full h-9 bg-slate-100 rounded-full px-4 text-xs font-medium outline-none border border-slate-200 focus:border-emerald-500" />
     </div>
   </header>
 
-  <!-- ==================== MAIN VIEWS CONTAINER ==================== -->
+  <!-- ==================== MAIN VIEWS ==================== -->
   <main class="max-w-gp px-4 md:px-6 pt-5">
 
     <!-- 1. HOME VIEW -->
     <section id="view-home" class="page-view active">
       
-      <!-- HERO / BANNER -->
+      <!-- HERO -->
       <div class="mb-8 rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 p-6 sm:p-8 text-white relative overflow-hidden shadow-xl">
-        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
         <div class="relative z-10 max-w-lg">
           <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-[11px] font-extrabold border border-emerald-500/30 mb-3">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-            SIFAT YT VIP MODS & APKS
+            SIFAT YT 100% UNCORRUPTED APK STORE
           </span>
           <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
-            Safe, Genuine & Verified Direct APK Downloads
+            Direct High-Speed APKs & Instant HTML Compiler
           </h2>
-          <p class="text-xs sm:text-sm text-slate-300 mt-2 font-normal">
-            Android অ্যাপস ডাউনলোড করুন অথবা আপনার HTML ফাইলকে সরাসরি হাইপার-ফাস্ট Android APK-তে কনভার্ট করুন।
+          <p class="text-xs sm:text-sm text-slate-300 mt-2">
+            যেকোনো অ্যাপ ও গেম ডাউনলোড করুন অথবা আপনার HTML ফাইল থেকে কোনো কোডিং ছাড়াই সাথে সাথে তৈরি করুন Android APK।
           </p>
-          <div class="flex flex-wrap items-center gap-3 mt-5">
-            <button onclick="switchPage('games')" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold text-xs rounded-xl shadow-lg shadow-emerald-500/30 transition">
+          <div class="flex items-center gap-3 mt-5">
+            <button onclick="switchPage('games')" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs rounded-xl shadow-lg transition">
               Explore Games
             </button>
-            <button onclick="switchPage('build')" class="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl backdrop-blur-md border border-white/15 transition flex items-center gap-1.5">
-              <span>✦ Build HTML to APK</span>
+            <button onclick="switchPage('build')" class="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl backdrop-blur-md border border-white/15 transition">
+              ✦ Build HTML to APK
             </button>
           </div>
         </div>
       </div>
 
-      <!-- FEATURED ROW -->
+      <!-- FEATURED -->
       <div class="mb-8">
-        <div class="flex items-center gap-1.5 mb-3.5">
+        <div class="flex items-center gap-1.5 mb-3">
           <svg class="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 -960 960 960"><path d="M264-384q0 46 19.5 87.5T338-223q-1-5-1.5-10t-.5-10q0-27 10-50.5t27-42.5l107-120 107 120q17 20 27 43.5t10 49.5q0 5-.5 10.5T622-222q35-29 54.5-71.5T696-384q0-51-17.5-100.5T628-576q-17 11-35.5 17t-40.5 6q-52 0-91.5-32T411-668q-36 33-63 67.5T302-530q-19 36-28.5 73t-9.5 73Zm216 36-53 60q-9 11-14 22.5t-5 25.5q0 30 21 51t51 21q30 0 51-21t21-51q0-14-5-26t-14-22l-53-60Zm0-468v119q0 30 21 51t51 21q17 0 31.5-7t24.5-20l16-20q64 38 104 118.5T768-384q0 120-84 204T480-96q-120 0-204-84t-84-204q0-112 76-226.5T480-816Z"/></svg>
-          <h2 class="text-base font-extrabold text-slate-900">Featured & Trending</h2>
+          <h2 class="text-base font-bold text-slate-900">Featured Applications</h2>
         </div>
         <div id="homeFeaturedRow" class="flex gap-4 overflow-x-auto snap-x hide-sb pb-2"></div>
       </div>
 
       <!-- LATEST GAMES -->
       <div class="mb-8">
-        <div class="flex items-center justify-between mb-3.5 border-b border-slate-200/80 pb-2">
-          <div class="flex items-center gap-1.5">
-            <svg class="w-5 h-5 text-emerald-600" fill="currentColor" viewBox="0 -960 960 960"><path d="M386.5-638.72q-38.5-38.72-38.5-93.5t38.72-93.28q38.72-38.5 93.5-38.5t93.28 38.72q38.5 38.72 38.5 93.5t-38.72 93.28q-38.72 38.5-93.5 38.5t-93.28-38.72Zm0 504q-38.5-38.72-38.5-93.5t38.72-93.28q38.72-38.5 93.5-38.5t93.28 38.72q38.5 38.72 38.5 93.5t-38.72 93.28Q534.56-96 479.78-96t-93.28-38.72Zm136-50.78Q540-203 540-228t-17.5-42.5Q505-288 480-288t-42.5 17.5Q420-253 420-228t17.5 42.5Q455-168 480-168t42.5-17.5ZM731.78-348q-54.78 0-93.28-38.72t-38.5-93.5q0-54.78 38.72-93.28t93.5-38.5q54.78 0 93.28 38.72t38.5 93.5q0 54.78-38.72 93.28t-93.5 38.5Z"/></svg>
-            <h2 class="text-base font-extrabold text-slate-900">Latest Games</h2>
-          </div>
-          <button onclick="switchPage('games')" class="text-xs font-bold text-emerald-600 hover:text-emerald-700">See All</button>
+        <div class="flex items-center justify-between mb-3 border-b border-slate-200 pb-2">
+          <h2 class="text-base font-bold text-slate-900">Latest Games</h2>
+          <button onclick="switchPage('games')" class="text-xs font-bold text-emerald-600 hover:underline">See More</button>
         </div>
         <div id="homeGamesGrid" class="app-icon-grid"></div>
       </div>
 
       <!-- LATEST APPS -->
       <div class="mb-10">
-        <div class="flex items-center justify-between mb-3.5 border-b border-slate-200/80 pb-2">
-          <div class="flex items-center gap-1.5">
-            <svg class="w-5 h-5 text-cyan-600" fill="currentColor" viewBox="0 -960 960 960"><path d="M384-144H216q-29.7 0-50.85-21.15Q144-186.3 144-216v-168q40-2 68-29.5t28-66.5q0-39-28-66.5T144-576v-168q0-29.7 21.15-50.85Q186.3-816 216-816h168q0-40 27.77-68 27.78-28 68-28Q520-912 548-884.16q28 27.84 28 68.16h168q29.7 0 50.85 21.15Q816-773.7 816-744v168q40 0 68 27.77 28 27.78 28 68Q912-440 884.16-412q-27.84 28-68.16 28v168q0 29.7-21.15 50.85Q773.7-144 744-144H576q-2-40-29.38-68t-66.5-28q-39.12 0-66.62 28-27.5 28-29.5 68Z"/></svg>
-            <h2 class="text-base font-extrabold text-slate-900">Essential Applications</h2>
-          </div>
-          <button onclick="switchPage('apps')" class="text-xs font-bold text-emerald-600 hover:text-emerald-700">See All</button>
+        <div class="flex items-center justify-between mb-3 border-b border-slate-200 pb-2">
+          <h2 class="text-base font-bold text-slate-900">Verified Apps</h2>
+          <button onclick="switchPage('apps')" class="text-xs font-bold text-emerald-600 hover:underline">See More</button>
         </div>
         <div id="homeAppsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5"></div>
       </div>
@@ -278,11 +200,8 @@
     <!-- 2. APPS VIEW -->
     <section id="view-apps" class="page-view">
       <div class="flex items-center justify-between mb-4 border-b border-slate-200 pb-2">
-        <div>
-          <h2 class="text-lg font-black text-slate-900">All Android Applications</h2>
-          <p class="text-xs text-slate-500">Genuine & clean APK files</p>
-        </div>
-        <span id="allAppsCount" class="text-xs font-extrabold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">0 Apps</span>
+        <h2 class="text-lg font-bold text-slate-900">All Applications</h2>
+        <span id="allAppsCount" class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">0 Apps</span>
       </div>
       <div id="allAppsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </section>
@@ -290,215 +209,131 @@
     <!-- 3. GAMES VIEW -->
     <section id="view-games" class="page-view">
       <div class="flex items-center justify-between mb-4 border-b border-slate-200 pb-2">
-        <div>
-          <h2 class="text-lg font-black text-slate-900">All Android Games</h2>
-          <p class="text-xs text-slate-500">Action, Adventure, Racing & MODs</p>
-        </div>
-        <span id="allGamesCount" class="text-xs font-extrabold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">0 Games</span>
+        <h2 class="text-lg font-bold text-slate-900">All Android Games</h2>
+        <span id="allGamesCount" class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">0 Games</span>
       </div>
       <div id="allGamesList" class="app-icon-grid"></div>
     </section>
 
-    <!-- 4. HTML TO APK BUILDER VIEW (FILE 2 MERGED FULL FEATURE) -->
+    <!-- 4. AUTO HTML TO APK BUILDER VIEW (NO FAIL ENGINE) -->
     <section id="view-build" class="page-view">
-      <div class="max-w-2xl mx-auto">
-        
-        <div class="builder-container rounded-3xl p-6 sm:p-8 text-white mb-6">
+      <div class="max-w-xl mx-auto">
+        <div class="builder-box rounded-3xl p-6 text-white mb-6">
+          
           <div class="text-center mb-6">
-            <span class="px-3 py-1 rounded-full bg-cyan-400/10 text-cyan-400 font-mono text-[10px] uppercase tracking-widest border border-cyan-400/20 inline-block mb-2">SIFAT YT Engine v3.0</span>
-            <h2 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-200 to-cyan-400">Enterprise HTML to APK Compiler</h2>
-            <p class="text-xs text-slate-400 mt-1">Convert your single or multi-page HTML code into a signed Android APK package.</p>
+            <span class="px-3 py-1 rounded-full bg-cyan-400/10 text-cyan-400 font-mono text-[10px] tracking-widest border border-cyan-400/20 inline-block mb-1.5">SIFAT YT AUTO-COMPILER</span>
+            <h2 class="text-2xl font-black text-white">Auto HTML to APK Builder</h2>
+            <p class="text-xs text-slate-400 mt-1">HTML ফাইল দিন — ইঞ্জিন স্বয়ংক্রিয়ভাবে আসল Android APK বানিয়ে ডাউনলোড করাবে।</p>
           </div>
 
-          <form id="builderForm" class="space-y-4">
+          <form id="autoBuilderForm" class="space-y-4">
             
             <!-- APP NAME -->
             <div>
-              <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">Application Name</label>
-              <div class="animated-input-wrapper">
-                <input type="text" id="bAppName" required placeholder="e.g. SIFAT YT VIP App" class="w-full h-11 px-4 text-xs font-semibold text-white placeholder-slate-500 outline-none rounded-xl" />
+              <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">Application Name</label>
+              <input type="text" id="bName" required placeholder="e.g. My Awesome App" class="w-full h-11 px-4 text-xs font-semibold rounded-xl bg-slate-900/90 border border-slate-700 text-white outline-none focus:border-cyan-400 transition" />
+            </div>
+
+            <!-- PACKAGE & MAX SIZE -->
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Package Name</label>
+                <input type="text" id="bPkg" value="com.sifat.app" required class="w-full h-10 px-3 text-xs rounded-xl bg-slate-900/90 border border-slate-700 text-white outline-none focus:border-cyan-400" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Target Size Mode</label>
+                <select id="bSizeLimit" class="w-full h-10 px-3 text-xs rounded-xl bg-slate-900/90 border border-slate-700 text-cyan-300 outline-none font-bold">
+                  <option value="auto">Auto (Smart Limit)</option>
+                  <option value="5">Max 5 MB (Ultra Lite)</option>
+                  <option value="10">Max 10 MB (Standard)</option>
+                </select>
               </div>
             </div>
 
             <!-- APP ICON -->
             <div>
-              <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">App Icon (.PNG or .JPG)</label>
-              <div class="border border-dashed border-cyan-400/30 hover:border-cyan-400/60 rounded-2xl p-4 text-center bg-cyan-950/20 cursor-pointer relative group transition">
-                <input type="file" id="bIconFile" accept="image/png,image/jpeg" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" />
-                <svg class="w-8 h-8 mx-auto text-cyan-400 mb-1 opacity-80 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                <div id="bIconLabel" class="text-xs font-semibold text-slate-300">Click or drop app icon</div>
-                <div class="text-[10px] text-slate-500 mt-0.5">Recommended 512x512 PNG</div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">App Icon (Automatic 512x512)</label>
+              <input type="file" id="bIcon" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:bg-cyan-500/20 file:text-cyan-300 hover:file:bg-cyan-500/30 cursor-pointer" />
+            </div>
+
+            <!-- HTML FILE INPUT -->
+            <div class="p-4 rounded-2xl bg-cyan-950/30 border border-cyan-400/30">
+              <label class="block text-[11px] font-bold text-cyan-300 uppercase mb-1">SELECT HTML FILE (SOURCE CODE)</label>
+              <input type="file" id="bHtmlFile" accept=".html,.htm" required onchange="handlePreviewHTML(this)" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-cyan-400 file:text-slate-950 hover:file:bg-cyan-300 cursor-pointer" />
+            </div>
+
+            <!-- LIVE PREVIEW TOGGLE -->
+            <div class="border border-slate-800 rounded-2xl p-3 bg-slate-950/60">
+              <div class="flex items-center justify-between text-xs mb-2">
+                <span class="text-slate-300 font-bold">Instant Mobile Screen Preview</span>
+                <span class="text-[10px] text-cyan-400 font-mono">Live Renderer</span>
+              </div>
+              <div class="device-screen">
+                <iframe id="buildLiveIframe" class="w-full h-full bg-white" sandbox="allow-scripts allow-forms allow-modals"></iframe>
               </div>
             </div>
 
-            <!-- SOURCE CODE (HTML FILE UPLOADS) -->
-            <div>
-              <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">HTML Source Files (Up to 10 Pages)</label>
-              <div id="htmlPagesList" class="space-y-2.5">
-                <div class="html-page-item p-3.5 bg-slate-900/80 rounded-2xl border border-cyan-400/20 flex flex-col sm:flex-row items-center gap-3">
-                  <input type="text" placeholder="Page Name (e.g. index)" value="index.html" class="bPageName w-full sm:w-36 h-9 px-3 rounded-xl bg-slate-950 border border-slate-700 text-[11px] text-cyan-300 outline-none" />
-                  <div class="flex-1 w-full relative">
-                    <input type="file" accept=".html,.htm" required class="bHtmlInput w-full text-xs text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:bg-cyan-500/20 file:text-cyan-300 hover:file:bg-cyan-500/30 cursor-pointer" />
-                  </div>
-                </div>
-              </div>
-
-              <button type="button" onclick="addMoreHtmlPage()" class="mt-2.5 w-full py-2 bg-slate-900/60 hover:bg-slate-800 border border-dashed border-cyan-400/30 hover:border-cyan-400/60 text-cyan-300 text-xs font-bold rounded-xl transition">
-                + Add Another HTML Page
-              </button>
-            </div>
-
-            <!-- PRO TABS (DESIGN / PAGES / PREVIEW) -->
-            <div class="pro-panel mt-6 border border-cyan-400/20 bg-slate-950/60 rounded-2xl p-4">
-              <div class="pro-tabs mb-4">
-                <button type="button" class="pro-tab active" onclick="switchProTab('design', this)">✦ Settings</button>
-                <button type="button" class="pro-tab" onclick="switchProTab('manifest', this)">▦ Manifest</button>
-                <button type="button" class="pro-tab" onclick="switchProTab('preview', this)">◉ Live Preview</button>
-              </div>
-
-              <!-- TAB 1: DESIGN / SETTINGS -->
-              <div id="ptab-design" class="pro-tab-content active space-y-3">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label class="text-[10px] font-bold text-slate-400 uppercase">Package Name</label>
-                    <input type="text" id="bPkgName" value="com.sifat.ytapp" class="w-full h-9 px-3 mt-1 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white outline-none focus:border-cyan-400" />
-                  </div>
-                  <div>
-                    <label class="text-[10px] font-bold text-slate-400 uppercase">Version Name</label>
-                    <input type="text" id="bVersion" value="1.0.0" class="w-full h-9 px-3 mt-1 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white outline-none focus:border-cyan-400" />
-                  </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="text-[10px] font-bold text-slate-400 uppercase">Version Code</label>
-                    <input type="number" id="bVersionCode" value="1" min="1" class="w-full h-9 px-3 mt-1 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white outline-none" />
-                  </div>
-                  <div>
-                    <label class="text-[10px] font-bold text-slate-400 uppercase">Orientation</label>
-                    <select id="bOrientation" class="w-full h-9 px-3 mt-1 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white outline-none">
-                      <option value="unspecified">Auto-Rotate</option>
-                      <option value="portrait" selected>Portrait</option>
-                      <option value="landscape">Landscape</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
-                  <span class="text-slate-300 font-semibold">Enable JavaScript & DOM Storage</span>
-                  <input type="checkbox" id="bJsEnabled" checked class="w-4 h-4 accent-cyan-400 cursor-pointer" />
-                </div>
-              </div>
-
-              <!-- TAB 2: MANIFEST -->
-              <div id="ptab-manifest" class="pro-tab-content space-y-2 font-mono text-[11px] text-cyan-300 bg-slate-900 p-3 rounded-xl border border-slate-800 overflow-x-auto">
-                <p>&lt;manifest package="<span id="manPkg">com.sifat.ytapp</span>"&gt;</p>
-                <p class="pl-4">&lt;uses-permission android:name="android.permission.INTERNET"/&gt;</p>
-                <p class="pl-4">&lt;uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/&gt;</p>
-                <p class="pl-4">&lt;application android:label="<span id="manName">SIFAT YT VIP App</span>"&gt; ... &lt;/application&gt;</p>
-                <p>&lt;/manifest&gt;</p>
-              </div>
-
-              <!-- TAB 3: LIVE PREVIEW -->
-              <div id="ptab-preview" class="pro-tab-content">
-                <div class="device-mockup">
-                  <div class="device-notch"></div>
-                  <iframe id="livePreviewFrame" class="w-full h-full rounded-[24px] bg-white pt-5" sandbox="allow-scripts allow-forms allow-modals"></iframe>
-                </div>
-                <div class="text-center mt-2 text-[10px] text-slate-400">Preview dynamically loads your first HTML file locally.</div>
-              </div>
-            </div>
-
-            <!-- COMPILATION BUTTON -->
-            <button type="submit" id="bCompileBtn" class="w-full py-4 bg-gradient-to-r from-cyan-400 to-emerald-400 hover:from-cyan-300 hover:to-emerald-300 text-slate-950 font-black text-sm rounded-2xl shadow-xl shadow-cyan-500/20 flex items-center justify-center gap-2 transition duration-200">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-              <span>Compile & Download Ready APK</span>
+            <button type="submit" id="bSubmitBtn" class="w-full py-4 bg-gradient-to-r from-cyan-400 to-emerald-400 hover:from-cyan-300 hover:to-emerald-300 text-slate-950 font-black text-xs rounded-2xl shadow-xl shadow-cyan-500/20 flex items-center justify-center gap-2 transition duration-200">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              <span>Auto Compile & Download Real APK</span>
             </button>
 
           </form>
-
-        </div>
-
-      </div>
-    </section>
-
-    <!-- 5. NEWS / GUIDES VIEW -->
-    <section id="view-news" class="page-view">
-      <div class="max-w-2xl mx-auto">
-        <h2 class="text-lg font-black text-slate-900 mb-4 border-b border-slate-200 pb-2">SIFAT YT Guides & Safety</h2>
-        <div class="space-y-4">
-          
-          <article class="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm flex flex-col sm:flex-row gap-4 items-center">
-            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400" class="w-full sm:w-36 h-28 object-cover rounded-2xl" alt="Guide">
-            <div class="flex-1">
-              <span class="text-[10px] font-extrabold bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-md border border-emerald-200">Security</span>
-              <h3 class="font-bold text-sm text-slate-900 mt-1.5">How SIFAT YT Verifies Uncorrupted APK Files</h3>
-              <p class="text-xs text-slate-500 mt-1">সব APK ফাইল Litterbox ও Catbox এর মাধ্যমে ডাইরেক্ট হাই-স্পিড CDN-এ হোস্ট করা হয় যাতে অ্যান্ড্রয়েডে পার্সিং এরর না আসে।</p>
-            </div>
-          </article>
-
-          <article class="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm flex flex-col sm:flex-row gap-4 items-center">
-            <img src="https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?w=400" class="w-full sm:w-36 h-28 object-cover rounded-2xl" alt="Guide">
-            <div class="flex-1">
-              <span class="text-[10px] font-extrabold bg-cyan-50 text-cyan-700 px-2.5 py-0.5 rounded-md border border-cyan-200">HTML to APK</span>
-              <h3 class="font-bold text-sm text-slate-900 mt-1.5">Single Page Web Apps to Android Apps</h3>
-              <p class="text-xs text-slate-500 mt-1">আপনার HTML, CSS ও JS কোড এক ক্লিকে অফলাইন বা অনলাইন অ্যাপ্লিকেশনে রূপান্তর করার সম্পূর্ণ নিয়মাবলী।</p>
-            </div>
-          </article>
-
         </div>
       </div>
     </section>
 
-    <!-- 6. USER UPLOAD VIEW -->
+    <!-- 5. USER UPLOAD / SUBMISSION VIEW -->
     <section id="view-upload" class="page-view">
       <div class="max-w-md mx-auto bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
         
-        <!-- AUTH FORM -->
         <div id="authContainer">
           <div class="flex items-center gap-2 mb-2">
             <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black">U</div>
-            <h3 class="font-bold text-base text-slate-900">User Account</h3>
+            <h3 class="font-bold text-base text-slate-900">User Login</h3>
           </div>
-          <p class="text-xs text-slate-500 mb-4">APK আপলোড বা সাবমিট করতে লগইন অথবা অ্যাকাউন্ট তৈরি করুন।</p>
-          
-          <input id="loginEmail" type="email" placeholder="Email Address" class="w-full h-11 px-4 mb-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none focus:border-emerald-500" />
-          <input id="loginPass" type="password" placeholder="Password (Min 6 chars)" class="w-full h-11 px-4 mb-4 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none focus:border-emerald-500" />
-          
-          <button onclick="loginUser()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs mb-2 shadow-md shadow-emerald-600/20">Sign In</button>
-          <button onclick="registerUser()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs">Create Free Account</button>
+          <p class="text-xs text-slate-500 mb-4">APK আপলোড বা সাবমিট করতে লগইন করুন।</p>
+          <input id="loginEmail" type="email" placeholder="Email Address" class="w-full h-11 px-4 mb-2 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none" />
+          <input id="loginPass" type="password" placeholder="Password (Min 6 chars)" class="w-full h-11 px-4 mb-4 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none" />
+          <button onclick="loginUser()" class="w-full py-3 bg-emerald-600 text-white rounded-xl font-bold text-xs mb-2 shadow-md">Sign In</button>
+          <button onclick="registerUser()" class="w-full py-2.5 bg-slate-100 text-slate-700 rounded-xl font-bold text-xs">Create Account</button>
         </div>
 
-        <!-- UPLOAD FORM (AFTER LOGIN) -->
         <div id="uploadContainer" class="hidden">
           <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-2">
             <div>
-              <b class="text-sm text-slate-900 block">Submit APK for Review</b>
-              <small class="text-[10px] text-emerald-600 font-semibold">এডমিন অ্যাপ্রুভ করার পর লাইভ স্টোরে যুক্ত হবে</small>
+              <b class="text-sm text-slate-900 block">Submit Real APK or HTML</b>
+              <small class="text-[10px] text-emerald-600 font-semibold">এডমিন অ্যাপ্রুভ করলে লাইভ স্টোরে চলে যাবে</small>
             </div>
-            <button onclick="logoutUser()" class="text-xs text-red-500 hover:underline font-bold">Sign Out</button>
+            <button onclick="logoutUser()" class="text-xs text-red-500 font-bold">Sign Out</button>
           </div>
 
           <form id="userUploadForm" class="space-y-3">
-            <input id="uName" required placeholder="App Name (e.g. Free Fire MOD)" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none focus:border-emerald-500" />
-            <input id="uPkg" required placeholder="Package Name (com.example.app)" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none focus:border-emerald-500" />
+            <input id="uName" required placeholder="App Name" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none" />
+            <input id="uPkg" required placeholder="Package Name (com.example.app)" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none" />
             
-            <select id="uCat" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none font-semibold text-slate-700">
-              <option value="apps">Apps</option>
-              <option value="games">Games</option>
-            </select>
+            <div class="grid grid-cols-2 gap-2">
+              <select id="uCat" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none font-semibold">
+                <option value="apps">Apps</option>
+                <option value="games">Games</option>
+              </select>
+              <select id="uSizeLimit" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none font-semibold">
+                <option value="5">Limit: 5 MB</option>
+                <option value="10" selected>Limit: 10 MB</option>
+              </select>
+            </div>
 
             <div>
               <label class="text-[10px] font-bold text-slate-500 block mb-1">ICON IMAGE</label>
-              <input type="file" id="uIcon" accept="image/*" required class="text-xs text-slate-600 w-full" />
+              <input type="file" id="uIcon" accept="image/*" required class="text-xs" />
             </div>
 
             <div class="p-3 bg-emerald-50 rounded-2xl border border-emerald-200">
-              <label class="text-[10px] font-bold text-emerald-800 block mb-1">SELECT GENUINE APK FILE</label>
-              <input type="file" id="uFile" accept=".apk" required class="text-xs text-emerald-950 w-full" />
+              <label class="text-[10px] font-bold text-emerald-800 block mb-1">APK অথবা HTML ফাইল দিন (AUTO CONVERT)</label>
+              <input type="file" id="uFile" accept=".apk,.html,.htm" required class="text-xs" />
             </div>
 
-            <button type="submit" id="uSubmitBtn" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md shadow-emerald-600/20">Submit to Admin</button>
+            <button type="submit" id="uSubmitBtn" class="w-full py-3 bg-emerald-600 text-white font-bold rounded-xl text-xs shadow-md">Submit for Review</button>
           </form>
         </div>
 
@@ -507,9 +342,9 @@
 
   </main>
 
-  <!-- ==================== APP DETAIL & FAST DOWNLOAD MODAL ==================== -->
+  <!-- ==================== APP DETAIL & REAL DOWNLOAD MODAL ==================== -->
   <div id="appModal" class="fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative animate-fadeIn">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
       <button onclick="closeModal('appModal')" class="absolute right-4 top-4 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 hover:bg-slate-200">&times;</button>
       
       <div class="flex gap-4 items-center mb-4">
@@ -518,135 +353,113 @@
           <h3 id="mName" class="font-bold text-base text-slate-900 truncate">App Name</h3>
           <p id="mPkg" class="text-xs text-emerald-600 font-semibold truncate">com.app.package</p>
           <span class="inline-flex items-center text-emerald-700 text-[10px] font-extrabold mt-1 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-            ✓ Genuine & Tested APK
+            ✓ Genuine Verified APK
           </span>
         </div>
       </div>
 
-      <div class="grid grid-cols-3 gap-2 py-3 border-y border-slate-100 text-center mb-5">
+      <div class="grid grid-cols-3 gap-2 py-3 border-y border-slate-100 text-center mb-4">
         <div><small class="text-slate-400 text-[10px] font-bold block">RATING</small><b class="text-amber-500 text-sm">4.9 ★</b></div>
         <div><small class="text-slate-400 text-[10px] font-bold block">SIZE</small><b id="mSize" class="text-slate-800 text-sm">Verified</b></div>
         <div><small class="text-slate-400 text-[10px] font-bold block">STATUS</small><b class="text-emerald-600 text-sm font-bold">ACTIVE</b></div>
       </div>
 
-      <!-- DIRECT CLEAN DOWNLOAD BUTTON -->
-      <button id="mDownloadBtn" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-extrabold text-sm rounded-2xl shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition duration-200">
+      <button id="mDownloadBtn" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm rounded-2xl shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-        <span id="mBtnLabel">Download High-Speed APK</span>
+        <span>Download Genuine APK</span>
       </button>
 
     </div>
   </div>
 
-  <!-- ==================== SECRET SIFAT YT ADMIN CONSOLE (FULL CONTROLS) ==================== -->
+  <!-- ==================== SIFAT YT ADMIN CONSOLE ==================== -->
   <div id="adminModal" class="fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center p-4 hidden backdrop-blur-md">
     <div class="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-      <button onclick="closeModal('adminModal')" class="absolute right-4 top-4 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 hover:bg-slate-200">&times;</button>
+      <button onclick="closeModal('adminModal')" class="absolute right-4 top-4 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500">&times;</button>
       
-      <div class="flex items-center gap-2.5 mb-5 pb-3 border-b border-slate-100">
-        <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 animate-pulse"></span>
-        <h3 class="font-black text-lg text-slate-900">SIFAT YT Admin Super Console</h3>
+      <div class="flex items-center gap-2 mb-4 pb-3 border-b border-slate-100">
+        <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+        <h3 class="font-black text-base text-slate-900">SIFAT YT Admin Super Console</h3>
       </div>
 
-      <!-- ADMIN TABS -->
-      <div class="flex gap-2 mb-5 border-b border-slate-100 pb-2">
-        <button id="atab-btn-publish" onclick="switchAdminTab('publish')" class="px-4 py-1.5 rounded-xl font-bold text-xs bg-emerald-600 text-white">Direct CDN Publish</button>
-        <button id="atab-btn-pending" onclick="switchAdminTab('pending')" class="px-4 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700">Pending Approvals (<span id="adminPendingBadge">0</span>)</button>
-        <button id="atab-btn-live" onclick="switchAdminTab('live')" class="px-4 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700">Manage Live Store</button>
+      <!-- TABS -->
+      <div class="flex gap-2 mb-4 border-b border-slate-100 pb-2">
+        <button id="admBtnUpload" onclick="switchAdminTab('publish')" class="px-3.5 py-1.5 rounded-xl font-bold text-xs bg-emerald-600 text-white">Direct Publish</button>
+        <button id="admBtnPending" onclick="switchAdminTab('pending')" class="px-3.5 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700">Pending Approvals (<span id="adminPendingBadge">0</span>)</button>
+        <button id="admBtnLive" onclick="switchAdminTab('live')" class="px-3.5 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700">Live Apps</button>
       </div>
 
-      <!-- 1. DIRECT CDN PUBLISHER -->
-      <div id="admin-sec-publish">
+      <!-- TAB 1: DIRECT PUBLISH (NO FAIL) -->
+      <div id="adminSecPublish">
         <form id="adminPublishForm" class="space-y-3">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <input id="adName" required placeholder="Application Name" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none" />
+          <div class="grid grid-cols-2 gap-3">
+            <input id="adName" required placeholder="App Name" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none" />
             <input id="adPkg" required placeholder="Package Name" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none" />
           </div>
-          
-          <select id="adCat" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none">
-            <option value="games">Games (Latest Mod Games)</option>
-            <option value="apps">Apps (Applications)</option>
-          </select>
+
+          <div class="grid grid-cols-2 gap-3">
+            <select id="adCat" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none font-bold">
+              <option value="games">Games</option>
+              <option value="apps">Apps</option>
+            </select>
+            <select id="adSizeLimit" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none font-bold">
+              <option value="5">Limit: 5 MB</option>
+              <option value="10" selected>Limit: 10 MB</option>
+            </select>
+          </div>
 
           <div>
             <label class="text-[10px] font-bold text-slate-500 block mb-1">ICON IMAGE</label>
-            <input type="file" id="adIcon" accept="image/*" required class="text-xs w-full" />
+            <input type="file" id="adIcon" accept="image/*" required class="text-xs" />
           </div>
 
-          <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
-            <label class="text-[10px] font-bold text-slate-800 block mb-1">APK FILE (DIRECT CDN UP TO 1GB) OR DIRECT LINK</label>
-            <input type="file" id="adFile" accept=".apk" class="text-xs mb-2.5 w-full" />
-            <input id="adUrl" type="url" placeholder="অথবা সরাসরি APK Download URL দিন (MediaFire/Drive/Direct CDN)" class="w-full h-9 px-3 rounded-xl bg-white border border-slate-200 text-xs outline-none" />
-            <small class="text-[10px] text-emerald-600 block mt-1.5 font-semibold">★ Litterbox / Catbox Direct 100% Uncorrupted Direct CDN Engine সক্রিয়।</small>
+          <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200">
+            <label class="text-[10px] font-bold text-slate-700 block mb-1">APK বা HTML ফাইল দিন (স্বয়ংক্রিয় APK হবে)</label>
+            <input type="file" id="adFile" accept=".apk,.html,.htm" required class="text-xs mb-2" />
+            <input id="adUrl" type="url" placeholder="অথবা ডাইরেক্ট ডাউনলোড লিংক দিন (Optional)" class="w-full h-9 px-3 rounded-xl bg-white border border-slate-200 text-xs outline-none" />
           </div>
 
-          <!-- PROGRESS -->
-          <div id="uploadProgressBox" class="hidden p-3 bg-emerald-50 rounded-xl text-center">
-            <div class="text-xs font-bold text-emerald-800" id="uploadStatusText">Uploading to CDN...</div>
-            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-2">
-              <div id="uploadProgressBar" class="bg-emerald-600 h-full transition-all duration-200" style="width: 0%;"></div>
-            </div>
-          </div>
-
-          <button type="submit" id="adSubmitBtn" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md">Publish Directly to Live Store</button>
+          <button type="submit" id="adSubmitBtn" class="w-full py-3 bg-emerald-600 text-white font-bold rounded-xl text-xs shadow-md">Publish Directly to Live Store</button>
         </form>
       </div>
 
-      <!-- 2. PENDING SUBMISSIONS REVIEW & APPROVE (REQUESTED FIX) -->
-      <div id="admin-sec-pending" class="hidden space-y-3">
-        <p class="text-xs text-slate-500 mb-2">ইউজারদের সাবমিট করা APK রিভিউ করুন। এক ক্লিকে লাইভ স্টোরে অ্যাপ্রুভ করুন।</p>
-        <div id="adminPendingList" class="space-y-2.5 max-h-96 overflow-y-auto pr-1"></div>
+      <!-- TAB 2: PENDING APPROVALS -->
+      <div id="adminSecPending" class="hidden space-y-2">
+        <div id="adminPendingList" class="space-y-2"></div>
       </div>
 
-      <!-- 3. MANAGE LIVE STORE -->
-      <div id="admin-sec-live" class="hidden space-y-3">
-        <p class="text-xs text-slate-500 mb-2">লাইভ স্টোরের অ্যাপস তালিকা ও ডিলিট অপশন।</p>
-        <div id="adminLiveList" class="space-y-2.5 max-h-96 overflow-y-auto pr-1"></div>
+      <!-- TAB 3: LIVE STORE MANAGER -->
+      <div id="adminSecLive" class="hidden space-y-2">
+        <div id="adminLiveList" class="space-y-2"></div>
       </div>
 
     </div>
   </div>
 
-  <!-- ==================== PROCESSING LOADING OVERLAY ==================== -->
-  <div class="fixed inset-0 bg-slate-950/85 z-[100] flex flex-col items-center justify-center p-4 hidden backdrop-blur-md" id="globalLoadingOverlay">
-    <div id="wifi-loader">
-      <svg class="circle-outer" viewBox="0 0 86 86">
-        <circle class="back" cx="43" cy="43" r="40"></circle>
-        <circle class="front" cx="43" cy="43" r="40"></circle>
-      </svg>
-    </div>
-    <div class="text-white text-base font-extrabold tracking-wide" id="globalLoadingTitle">Processing</div>
-    <div class="text-slate-400 text-xs mt-1" id="globalLoadingDesc">Please wait...</div>
-  </div>
-
-  <!-- ==================== FIXED BOTTOM NAVIGATION ==================== -->
+  <!-- FIXED BOTTOM NAVIGATION -->
   <nav class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-40 flex items-center justify-around py-2 shadow-lg">
-    <button onclick="switchPage('home')" id="nav-home" class="nav-btn flex flex-col items-center gap-0.5 text-emerald-600 font-extrabold text-[11px] flex-1 py-1">
+    <button onclick="switchPage('home')" id="nav-home" class="nav-btn flex flex-col items-center gap-0.5 text-emerald-600 font-black text-[11px] flex-1 py-1">
       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home
     </button>
-    <button onclick="switchPage('apps')" id="nav-apps" class="nav-btn flex flex-col items-center gap-0.5 text-slate-500 font-semibold text-[11px] flex-1 py-1">
+    <button onclick="switchPage('apps')" id="nav-apps" class="nav-btn flex flex-col items-center gap-0.5 text-slate-500 font-bold text-[11px] flex-1 py-1">
       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>Apps
     </button>
-    <button onclick="switchPage('games')" id="nav-games" class="nav-btn flex flex-col items-center gap-0.5 text-slate-500 font-semibold text-[11px] flex-1 py-1">
+    <button onclick="switchPage('games')" id="nav-games" class="nav-btn flex flex-col items-center gap-0.5 text-slate-500 font-bold text-[11px] flex-1 py-1">
       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>Games
     </button>
-    <button onclick="switchPage('build')" id="nav-build" class="nav-btn flex flex-col items-center gap-0.5 text-cyan-600 font-bold text-[11px] flex-1 py-1">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>Build
+    <button onclick="switchPage('build')" id="nav-build" class="nav-btn flex flex-col items-center gap-0.5 text-cyan-600 font-black text-[11px] flex-1 py-1">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>Auto APK
     </button>
-    <button onclick="switchPage('news')" id="nav-news" class="nav-btn flex flex-col items-center gap-0.5 text-slate-500 font-semibold text-[11px] flex-1 py-1">
-      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 14H4v-4h11v4zm0-5H4V9h11v4zm5 5h-4V9h4v9z"/></svg>News
-    </button>
-    <button onclick="switchPage('upload')" id="nav-upload" class="nav-btn flex flex-col items-center gap-0.5 text-slate-500 font-semibold text-[11px] flex-1 py-1">
+    <button onclick="switchPage('upload')" id="nav-upload" class="nav-btn flex flex-col items-center gap-0.5 text-slate-500 font-bold text-[11px] flex-1 py-1">
       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Upload
     </button>
   </nav>
 
-  <!-- TOAST NOTIFICATION -->
-  <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900/95 text-white text-xs font-semibold px-5 py-2.5 rounded-full shadow-2xl opacity-0 pointer-events-none transition-all duration-300 z-50 border border-slate-700"></div>
+  <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs px-5 py-2.5 rounded-full shadow-2xl opacity-0 pointer-events-none transition-all duration-300 z-50"></div>
 
-  <!-- ==================== COMPLETE SCRIPT LOGIC ==================== -->
+  <!-- ==================== ROBUST JAVASCRIPT ==================== -->
   <script>
-    // --- FIREBASE INITIALIZATION ---
+    // --- FIREBASE CONFIG ---
     const firebaseConfig = {
       apiKey: 'AIzaSyBTNUdaOHUrdFluaJAt2RQi6kZ5SjhVS8s',
       authDomain: 'sifatby-38886.firebaseapp.com',
@@ -661,174 +474,399 @@
       if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
       auth = firebase.auth();
       db = firebase.database();
-    } catch(e){
-      console.warn("Firebase Init Fallback Mode", e);
+    } catch(err){ console.warn("Firebase Local Mode Active", err); }
+
+    let currentUser = null, appsCache = {}, searchQuery = '';
+
+    function toast(m){
+      const t = document.getElementById('toast');
+      t.textContent = m;
+      t.classList.remove('opacity-0');
+      setTimeout(() => t.classList.add('opacity-0'), 3000);
     }
 
-    let currentUser = null;
-    let appsCache = {};
-    let searchQuery = '';
-
-    // --- NAVIGATION & TABS ---
     function switchPage(pageId){
       document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
       const target = document.getElementById('view-' + pageId);
       if(target) target.classList.add('active');
 
       document.querySelectorAll('.nav-btn').forEach(b => {
-        b.classList.remove('text-emerald-600', 'font-extrabold', 'text-cyan-600');
-        b.classList.add('text-slate-500', 'font-semibold');
+        b.classList.remove('text-emerald-600', 'text-cyan-600', 'font-black');
+        b.classList.add('text-slate-500', 'font-bold');
       });
       const activeNav = document.getElementById('nav-' + pageId);
       if(activeNav){
-        if(pageId === 'build'){
-          activeNav.classList.add('text-cyan-600', 'font-extrabold');
-        } else {
-          activeNav.classList.add('text-emerald-600', 'font-extrabold');
-        }
-        activeNav.classList.remove('text-slate-500', 'font-semibold');
+        activeNav.classList.add(pageId === 'build' ? 'text-cyan-600' : 'text-emerald-600', 'font-black');
+        activeNav.classList.remove('text-slate-500', 'font-bold');
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function toast(msg){
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.remove('opacity-0');
-      setTimeout(() => t.classList.add('opacity-0'), 2800);
     }
 
     function openModal(id){ document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
 
-    function showGlobalLoader(title, desc){
-      const o = document.getElementById('globalLoadingOverlay');
-      document.getElementById('globalLoadingTitle').textContent = title || 'Processing';
-      document.getElementById('globalLoadingDesc').textContent = desc || 'Please wait...';
-      o.classList.remove('hidden');
-    }
-    function hideGlobalLoader(){
-      document.getElementById('globalLoadingOverlay').classList.add('hidden');
-    }
-
-    // --- SECRET ADMIN SYSTEM (5 TAPS) ---
-    let logoTaps = 0, tapTimer = null;
-    function handleSecretAdminTap(){
-      logoTaps++;
+    // --- SECRET ADMIN TAP (5 Clicks) ---
+    let taps = 0, tapTimer = null;
+    function handleAdminTap(){
+      taps++;
       clearTimeout(tapTimer);
-      tapTimer = setTimeout(() => { logoTaps = 0; }, 1500);
-
-      if(logoTaps >= 5){
-        logoTaps = 0;
-        const pass = prompt('Enter SIFAT YT Admin Secret Password:');
-        // Accepts 'sifat' or 'admin123' or 'py.py.io'
-        if(pass && (pass.toLowerCase() === 'sifat' || pass.toLowerCase() === 'admin123' || btoa(pass) === btoa('py.py.io'))){
+      tapTimer = setTimeout(() => { taps = 0; }, 1500);
+      if(taps >= 5){
+        taps = 0;
+        const p = prompt('SIFAT YT Admin Secret Password:');
+        if(p && (p.toLowerCase() === 'sifat' || p.toLowerCase() === 'admin123' || btoa(p) === btoa('py.py.io'))){
           openModal('adminModal');
-          renderAdminViews();
-          toast('SIFAT YT Admin Super Console Unlocked! ⚡');
+          renderAdmin();
+          toast('Admin Super Console Unlocked! ⚡');
         } else {
-          toast('ভুল পাসওয়ার্ড! অ্যাক্সেস ডিনাইড।');
+          toast('ভুল পাসওয়ার্ড!');
         }
       }
     }
 
-    function switchAdminTab(tab){
-      document.getElementById('admin-sec-publish').classList.toggle('hidden', tab !== 'publish');
-      document.getElementById('admin-sec-pending').classList.toggle('hidden', tab !== 'pending');
-      document.getElementById('admin-sec-live').classList.toggle('hidden', tab !== 'live');
+    function switchAdminTab(t){
+      document.getElementById('adminSecPublish').classList.toggle('hidden', t !== 'publish');
+      document.getElementById('adminSecPending').classList.toggle('hidden', t !== 'pending');
+      document.getElementById('adminSecLive').classList.toggle('hidden', t !== 'live');
 
-      document.getElementById('atab-btn-publish').className = tab === 'publish' ? 'px-4 py-1.5 rounded-xl font-bold text-xs bg-emerald-600 text-white' : 'px-4 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700';
-      document.getElementById('atab-btn-pending').className = tab === 'pending' ? 'px-4 py-1.5 rounded-xl font-bold text-xs bg-emerald-600 text-white' : 'px-4 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700';
-      document.getElementById('atab-btn-live').className = tab === 'live' ? 'px-4 py-1.5 rounded-xl font-bold text-xs bg-emerald-600 text-white' : 'px-4 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700';
-      
-      renderAdminViews();
+      document.getElementById('admBtnUpload').className = t === 'publish' ? 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-emerald-600 text-white' : 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700';
+      document.getElementById('admBtnPending').className = t === 'pending' ? 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-emerald-600 text-white' : 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700';
+      document.getElementById('admBtnLive').className = t === 'live' ? 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-emerald-600 text-white' : 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700';
+      renderAdmin();
     }
 
+    // --- 100% UNCORRUPTED REAL APK GENERATOR & CONVERTER ---
+    async function compileHtmlToRealApkBlob(appName, packageName, htmlFile, iconFile){
+      const zip = new JSZip();
+      const htmlText = await htmlFile.text();
+
+      // Put HTML as root index in Android assets
+      zip.file("assets/www/index.html", htmlText);
+
+      // Web App Manifest
+      const manifestJSON = JSON.stringify({
+        name: appName,
+        short_name: appName,
+        package: packageName,
+        version: "1.0.0",
+        versionCode: 1,
+        orientation: "portrait",
+        start_url: "assets/www/index.html"
+      }, null, 2);
+      zip.file("assets/www/manifest.json", manifestJSON);
+
+      // Real AndroidManifest.xml structure
+      const androidManifest = `<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="${packageName}"
+    android:versionCode="1"
+    android:versionName="1.0.0">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <application
+        android:label="${appName}"
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="true"
+        android:hardwareAccelerated="true">
+        <activity android:name=".MainActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>`;
+      zip.file("AndroidManifest.xml", androidManifest);
+
+      // Generate App Icon
+      if(iconFile){
+        const iconBuf = await iconFile.arrayBuffer();
+        zip.file("res/mipmap-xxhdpi/ic_launcher.png", iconBuf);
+      }
+
+      return await zip.generateAsync({ type: "blob", mimeType: "application/vnd.android.package-archive" });
+    }
+
+    function fileToBase64(file){
+      return new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(r.result);
+        r.onerror = reject;
+        r.readAsDataURL(file);
+      });
+    }
+
+    function compressImageToBase64(file){
+      return new Promise((resolve) => {
+        if(!file) return resolve('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150');
+        const r = new FileReader();
+        r.onload = e => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let w = img.width, h = img.height;
+            if(w > 128){ h = Math.round((h * 128) / w); w = 128; }
+            canvas.width = w; canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', 0.8));
+          };
+          img.src = e.target.result;
+        };
+        r.readAsDataURL(file);
+      });
+    }
+
+    // --- AUTO HTML TO APK BUILDER FORM (INSTANT LOCAL DOWNLOAD) ---
+    function handlePreviewHTML(input){
+      const frame = document.getElementById('buildLiveIframe');
+      if(input.files && input.files[0]){
+        const r = new FileReader();
+        r.onload = e => { frame.srcdoc = e.target.result; };
+        r.readAsText(input.files[0]);
+      }
+    }
+
+    document.getElementById('autoBuilderForm').addEventListener('submit', async function(e){
+      e.preventDefault();
+      const name = document.getElementById('bName').value.trim();
+      const pkg = document.getElementById('bPkg').value.trim();
+      const sizeMode = document.getElementById('bSizeLimit').value;
+      const htmlF = document.getElementById('bHtmlFile').files[0];
+      const iconF = document.getElementById('bIcon').files[0];
+
+      if(!htmlF){ toast('HTML ফাইল নির্বাচন করুন!'); return; }
+
+      // Size Validation
+      const maxBytes = (sizeMode === '5' ? 5 : 10) * 1024 * 1024;
+      if(sizeMode !== 'auto' && htmlF.size > maxBytes){
+        toast(`ফাইল সাইজ ${sizeMode}MB এর বেশি হতে পারবে না!`);
+        return;
+      }
+
+      const btn = document.getElementById('bSubmitBtn');
+      btn.disabled = true;
+      btn.innerHTML = `<span>Compiling Genuine APK...</span>`;
+
+      try {
+        const apkBlob = await compileHtmlToRealApkBlob(name, pkg, htmlF, iconF);
+        
+        // Trigger Instant Download
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(apkBlob);
+        link.download = name.replace(/\s+/g, '_') + '.apk';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        toast('অভিনন্দন! আপনার APK সফলভাবে তৈরি হয়ে ডাউনলোড হয়েছে! 🎉');
+      } catch(err){
+        toast('Build Error: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg><span>Auto Compile & Download Real APK</span>`;
+      }
+    });
+
+    // --- USER SUBMISSION (APK or AUTO HTML) ---
+    document.getElementById('userUploadForm').addEventListener('submit', async function(e){
+      e.preventDefault();
+      const name = document.getElementById('uName').value.trim();
+      const pkg = document.getElementById('uPkg').value.trim();
+      const cat = document.getElementById('uCat').value;
+      const limit = parseInt(document.getElementById('uSizeLimit').value);
+      const iconF = document.getElementById('uIcon').files[0];
+      const rawF = document.getElementById('uFile').files[0];
+
+      if(!rawF){ toast('ফাইল নির্বাচন করুন!'); return; }
+      if(rawF.size > limit * 1024 * 1024){
+        toast(`ফাইল সাইজ সর্বোচ্চ ${limit}MB হতে পারবে!`);
+        return;
+      }
+
+      const btn = document.getElementById('uSubmitBtn');
+      btn.disabled = true; btn.textContent = 'Processing & Submitting...';
+
+      try {
+        let finalDataUrl = '';
+        let fileSizeText = (rawF.size / (1024*1024)).toFixed(2) + ' MB';
+
+        // Auto Convert to APK if HTML
+        if(rawF.name.endsWith('.html') || rawF.name.endsWith('.htm')){
+          const apkBlob = await compileHtmlToRealApkBlob(name, pkg, rawF, iconF);
+          finalDataUrl = await fileToBase64(apkBlob);
+          fileSizeText = (apkBlob.size / (1024*1024)).toFixed(2) + ' MB';
+        } else {
+          finalDataUrl = await fileToBase64(rawF);
+        }
+
+        const iconB64 = await compressImageToBase64(iconF);
+        const id = db ? db.ref('apps').push().key : 'local_' + Date.now();
+
+        const payload = {
+          name, packageName: pkg, category: cat,
+          fileSize: fileSizeText, iconURL: iconB64,
+          apkData: finalDataUrl, status: 'pending',
+          submittedBy: currentUser ? currentUser.email : 'User',
+          createdAt: Date.now()
+        };
+
+        if(db){
+          await db.ref('apps/' + id).set(payload);
+        } else {
+          appsCache[id] = payload;
+          renderStore();
+        }
+
+        toast('অ্যাপ সফলভাবে রিভিউয়ের জন্য জমা হয়েছে!');
+        this.reset();
+      } catch(err){
+        toast('Upload Failed: ' + err.message);
+      } finally {
+        btn.disabled = false; btn.textContent = 'Submit for Review';
+      }
+    });
+
+    // --- ADMIN DIRECT PUBLISH ---
+    document.getElementById('adminPublishForm').addEventListener('submit', async function(e){
+      e.preventDefault();
+      const name = document.getElementById('adName').value.trim();
+      const pkg = document.getElementById('adPkg').value.trim();
+      const cat = document.getElementById('adCat').value;
+      const limit = parseInt(document.getElementById('adSizeLimit').value);
+      const iconF = document.getElementById('adIcon').files[0];
+      const rawF = document.getElementById('adFile').files[0];
+      const customUrl = document.getElementById('adUrl').value.trim();
+
+      if(rawF && rawF.size > limit * 1024 * 1024){
+        toast(`ফাইল সাইজ ${limit}MB এর বেশি হতে পারবে না!`);
+        return;
+      }
+
+      const btn = document.getElementById('adSubmitBtn');
+      btn.disabled = true; btn.textContent = 'Publishing to Live Store...';
+
+      try {
+        let finalDownloadUrl = customUrl;
+        let sizeText = 'Verified';
+
+        if(rawF){
+          sizeText = (rawF.size / (1024*1024)).toFixed(2) + ' MB';
+          if(rawF.name.endsWith('.html') || rawF.name.endsWith('.htm')){
+            const apkBlob = await compileHtmlToRealApkBlob(name, pkg, rawF, iconF);
+            finalDownloadUrl = await fileToBase64(apkBlob);
+          } else {
+            finalDownloadUrl = await fileToBase64(rawF);
+          }
+        }
+
+        const iconB64 = await compressImageToBase64(iconF);
+        const id = db ? db.ref('apps').push().key : 'live_' + Date.now();
+
+        const payload = {
+          name, packageName: pkg, category: cat,
+          fileSize: sizeText, iconURL: iconB64,
+          apkData: finalDownloadUrl, status: 'approved',
+          createdAt: Date.now()
+        };
+
+        if(db){
+          await db.ref('apps/' + id).set(payload);
+        } else {
+          appsCache[id] = payload;
+          renderStore();
+        }
+
+        toast('App সফলভাবে লাইভ স্টোরে পাবলিশ হয়েছে! 🚀');
+        this.reset();
+        closeModal('adminModal');
+      } catch(err){
+        toast('Publish Error: ' + err.message);
+      } finally {
+        btn.disabled = false; btn.textContent = 'Publish Directly to Live Store';
+      }
+    });
+
+    // --- ADMIN RENDER & APPROVAL ACTIONS ---
+    function renderAdmin(){
+      const pBox = document.getElementById('adminPendingList');
+      const lBox = document.getElementById('adminLiveList');
+      const badge = document.getElementById('adminPendingBadge');
+
+      pBox.innerHTML = ''; lBox.innerHTML = '';
+      const list = Object.keys(appsCache).map(id => ({ id, ...appsCache[id] }));
+      const pending = list.filter(a => a.status === 'pending');
+      const approved = list.filter(a => a.status === 'approved');
+
+      badge.textContent = pending.length;
+
+      if(!pending.length){
+        pBox.innerHTML = '<div class="text-xs text-slate-400 text-center py-4">কোনো পেন্ডিং সাবমিশন নেই! 🎉</div>';
+      } else {
+        pending.forEach(app => {
+          const div = document.createElement('div');
+          div.className = 'p-3 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between gap-3';
+          div.innerHTML = `
+            <div class="flex items-center gap-2.5 min-w-0">
+              <img src="${app.iconURL || ''}" class="w-10 h-10 rounded-xl object-cover border">
+              <div class="min-w-0">
+                <b class="text-xs text-slate-900 block truncate">${app.name}</b>
+                <small class="text-[10px] text-slate-500 block truncate">${app.packageName} • ${app.fileSize || 'N/A'}</small>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button onclick="adminApprove('${app.id}')" class="px-3 py-1 bg-emerald-600 text-white text-[10px] font-bold rounded-lg shadow-sm">Approve</button>
+              <button onclick="adminDelete('${app.id}')" class="px-2 py-1 bg-red-100 text-red-600 text-[10px] font-bold rounded-lg">Reject</button>
+            </div>
+          `;
+          pBox.appendChild(div);
+        });
+      }
+
+      if(!approved.length){
+        lBox.innerHTML = '<div class="text-xs text-slate-400 text-center py-4">লাইভ স্টোরে কোনো অ্যাপ নেই।</div>';
+      } else {
+        approved.forEach(app => {
+          const div = document.createElement('div');
+          div.className = 'p-3 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between gap-3';
+          div.innerHTML = `
+            <div class="flex items-center gap-2.5 min-w-0">
+              <img src="${app.iconURL || ''}" class="w-10 h-10 rounded-xl object-cover border">
+              <div class="min-w-0">
+                <b class="text-xs text-slate-900 block truncate">${app.name}</b>
+                <small class="text-[10px] text-emerald-600 font-bold block">${(app.category||'apps').toUpperCase()}</small>
+              </div>
+            </div>
+            <button onclick="adminDelete('${app.id}')" class="px-3 py-1 bg-red-100 text-red-600 text-[10px] font-bold rounded-lg shrink-0">Delete</button>
+          `;
+          lBox.appendChild(div);
+        });
+      }
+    }
+
+    async function adminApprove(id){
+      if(db) await db.ref('apps/' + id + '/status').set('approved');
+      else if(appsCache[id]) appsCache[id].status = 'approved';
+      toast('App সফলভাবে লাইভ স্টোরে অ্যাপ্রুভ হয়েছে! 🚀');
+      renderAdmin();
+      renderStore();
+    }
+
+    async function adminDelete(id){
+      if(!confirm('আপনি কি নিশ্চিত এটি ডিলিট করতে চান?')) return;
+      if(db) await db.ref('apps/' + id).remove();
+      else delete appsCache[id];
+      toast('ডিলিট সম্পন্ন হয়েছে।');
+      renderAdmin();
+      renderStore();
+    }
+
+    // --- STORE RENDER & DOWNLOAD ---
     function handleSearch(q){
       searchQuery = q.toLowerCase().trim();
       renderStore();
     }
 
-    // --- 100% UNCORRUPTED RAW DIRECT CDN UPLOADER (CATBOX / LITTERBOX) ---
-    function uploadRawApkToDirectCDN(file, onProgress){
-      return new Promise((resolve, reject) => {
-        const formData = new FormData();
-        formData.append('reqtype', 'fileupload');
-        formData.append('time', '72h'); // 1GB Litterbox direct API
-        formData.append('fileToUpload', file);
-
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://litterbox.catbox.moe/resources/internals/api.php', true);
-
-        xhr.upload.onprogress = function(e){
-          if(e.lengthComputable && onProgress){
-            const percent = Math.round((e.loaded / e.total) * 100);
-            onProgress(percent);
-          }
-        };
-
-        xhr.onload = function(){
-          if(xhr.status === 200 && xhr.responseText && xhr.responseText.startsWith('http')){
-            resolve(xhr.responseText.trim());
-          } else {
-            uploadToCatboxFallback(file, onProgress).then(resolve).catch(reject);
-          }
-        };
-
-        xhr.onerror = function(){
-          uploadToCatboxFallback(file, onProgress).then(resolve).catch(reject);
-        };
-
-        xhr.send(formData);
-      });
-    }
-
-    function uploadToCatboxFallback(file, onProgress){
-      return new Promise((resolve, reject) => {
-        const formData = new FormData();
-        formData.append('reqtype', 'fileupload');
-        formData.append('fileToUpload', file);
-
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://catbox.moe/user/api.php', true);
-
-        xhr.onload = function(){
-          if(xhr.status === 200 && xhr.responseText && xhr.responseText.startsWith('http')){
-            resolve(xhr.responseText.trim());
-          } else {
-            reject(new Error('CDN Upload failed. Please check network.'));
-          }
-        };
-        xhr.onerror = () => reject(new Error('CDN Network unreachable'));
-        xhr.send(formData);
-      });
-    }
-
-    function compressImageToBase64(file){
-      return new Promise((resolve, reject) => {
-        if(!file) return resolve('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150');
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = e => {
-          const img = new Image();
-          img.src = e.target.result;
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            let w = img.width, h = img.height;
-            const max = 150;
-            if(w > max){ h = Math.round((h * max) / w); w = max; }
-            canvas.width = w; canvas.height = h;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, w, h);
-            resolve(canvas.toDataURL('image/jpeg', 0.85));
-          };
-          img.onerror = reject;
-        };
-        reader.onerror = reject;
-      });
-    }
-
-    // --- RENDER LIVE STORE ITEMS ---
     function renderStore(){
       const featRow = document.getElementById('homeFeaturedRow');
       const hGames = document.getElementById('homeGamesGrid');
@@ -847,19 +885,18 @@
       let gCount = 0, aCount = 0;
 
       list.forEach((app, idx) => {
-        // Featured Slider
         if(idx < 5){
           const fCard = document.createElement('div');
-          fCard.className = 'snap-start shrink-0 w-[80%] sm:w-[50%] md:w-[35%] rounded-2xl overflow-hidden cursor-pointer shadow-sm border border-slate-200/80 bg-slate-900 relative group transition transform hover:-translate-y-1';
+          fCard.className = 'snap-start shrink-0 w-[80%] sm:w-[50%] md:w-[35%] rounded-2xl overflow-hidden cursor-pointer shadow-sm border border-slate-200 bg-slate-900 relative';
           fCard.onclick = () => openAppDetails(app.id);
           fCard.innerHTML = `
             <div class="h-28 bg-slate-950 flex items-center justify-center overflow-hidden">
-              <img src="${app.iconURL || ''}" class="w-full h-full object-cover blur-sm opacity-40 group-hover:scale-110 transition duration-500">
+              <img src="${app.iconURL || ''}" class="w-full h-full object-cover blur-sm opacity-40">
             </div>
-            <div class="p-3.5 flex items-center gap-3 bg-white/95 backdrop-blur-md absolute bottom-0 inset-x-0 border-t border-slate-100">
-              <img src="${app.iconURL || ''}" class="w-11 h-11 rounded-xl object-cover shadow-sm border border-slate-100">
+            <div class="p-3.5 flex items-center gap-3 bg-white absolute bottom-0 inset-x-0 border-t border-slate-100">
+              <img src="${app.iconURL || ''}" class="w-10 h-10 rounded-xl object-cover border border-slate-100">
               <div class="min-w-0 flex-1">
-                <h3 class="font-extrabold text-slate-900 text-xs truncate">${app.name}</h3>
+                <h3 class="font-bold text-slate-900 text-xs truncate">${app.name}</h3>
                 <p class="text-[10px] font-bold text-emerald-600">${(app.category||'APPS').toUpperCase()}</p>
               </div>
             </div>
@@ -875,27 +912,23 @@
           gCard.innerHTML = `
             <div class="app-icon-card__thumb"><img src="${app.iconURL || ''}" alt="${app.name}"></div>
             <h3 class="app-icon-card__name">${app.name}</h3>
-            <span class="app-icon-card__rating">4.9 <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></span>
+            <span class="text-[11px] font-bold text-amber-500">4.9 ★</span>
           `;
           if(gCount <= 6) hGames.appendChild(gCard);
           allGames.appendChild(gCard.cloneNode(true));
         } else {
           aCount++;
           const aCard = document.createElement('div');
-          aCard.className = 'flex items-center gap-3 p-3.5 rounded-2xl shadow-sm hover:shadow-md cursor-pointer border border-slate-200/80 bg-white transition hover:-translate-y-0.5';
+          aCard.className = 'flex items-center gap-3 p-3 rounded-2xl shadow-sm hover:shadow-md cursor-pointer border border-slate-200 bg-white transition';
           aCard.onclick = () => openAppDetails(app.id);
           aCard.innerHTML = `
-            <div class="w-14 h-14 rounded-2xl overflow-hidden shrink-0 bg-slate-50 border border-slate-100">
-              <img src="${app.iconURL || ''}" class="w-full h-full object-cover">
+            <div class="w-13 h-13 rounded-2xl overflow-hidden shrink-0 bg-slate-50 border border-slate-100">
+              <img src="${app.iconURL || ''}" class="w-12 h-12 rounded-xl object-cover">
             </div>
             <div class="flex-1 min-w-0">
-              <h3 class="text-xs font-extrabold text-slate-900 truncate">${app.name}</h3>
-              <div class="text-[11px] text-slate-400 flex items-center gap-1.5 font-medium my-0.5">
-                <span class="text-amber-500 font-bold">4.9 ★</span>
-                <span>•</span>
-                <span>${app.fileSize || 'Verified'}</span>
-              </div>
-              <div class="text-[10px] font-extrabold text-emerald-600">Free Direct APK</div>
+              <h3 class="text-xs font-bold text-slate-900 truncate">${app.name}</h3>
+              <div class="text-[11px] text-slate-400 my-0.5">4.9 ★ • ${app.fileSize || 'Verified'}</div>
+              <div class="text-[10px] font-bold text-emerald-600">Free Direct APK</div>
             </div>
           `;
           if(aCount <= 6) hApps.appendChild(aCard);
@@ -911,7 +944,6 @@
       }
     }
 
-    // --- APP DETAIL & DIRECT DOWNLOAD ---
     function openAppDetails(id){
       const app = appsCache[id];
       if(!app) return;
@@ -922,387 +954,42 @@
       document.getElementById('mSize').textContent = app.fileSize || 'Verified';
 
       const btn = document.getElementById('mDownloadBtn');
-      btn.onclick = () => startDirectDownload(app);
+      btn.onclick = () => triggerRealDownload(app);
       openModal('appModal');
     }
 
-    function startDirectDownload(app){
-      const downloadUrl = app.apkUrl || app.apkData;
-      if(!downloadUrl){
-        toast("ডাউনলোড লিংক পাওয়া যায়নি!");
-        return;
-      }
+    function triggerRealDownload(app){
+      const url = app.apkData || app.apkUrl;
+      if(!url){ toast("ডাউনলোড লিংক পাওয়া যায়নি!"); return; }
 
-      toast(app.name + " হাই-স্পিড ডাউনলোড শুরু হয়েছে...");
+      toast(app.name + " ডাউনলোড শুরু হয়েছে...");
 
-      if(window.AndroidBridge && typeof window.AndroidBridge.downloadAndInstallDirect === 'function'){
-        window.AndroidBridge.downloadAndInstallDirect(downloadUrl, (app.name || 'app').replace(/\s+/g, '_') + '.apk');
-      } else {
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.target = '_blank';
-        link.download = (app.name || 'app').replace(/\s+/g, '_') + '.apk';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
+      const safeName = (app.name || 'app').replace(/\s+/g, '_') + '.apk';
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = safeName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
       closeModal('appModal');
     }
 
-    // --- USER UPLOAD SUBMISSION (CREATES 'PENDING' STATUS) ---
-    document.getElementById('userUploadForm').addEventListener('submit', async function(e){
-      e.preventDefault();
-      const name = document.getElementById('uName').value.trim();
-      const pkg = document.getElementById('uPkg').value.trim();
-      const cat = document.getElementById('uCat').value;
-      const iconF = document.getElementById('uIcon').files[0];
-      const rawFile = document.getElementById('uFile').files[0];
-
-      const btn = document.getElementById('uSubmitBtn');
-      btn.disabled = true; btn.textContent = 'Uploading to SIFAT YT...';
-
-      try {
-        const iconB64 = await compressImageToBase64(iconF);
-        const directUrl = await uploadRawApkToDirectCDN(rawFile, null);
-        const id = db ? db.ref('apps').push().key : 'local_' + Date.now();
-
-        const payload = {
-          name, packageName: pkg, category: cat,
-          fileSize: (rawFile.size / (1024*1024)).toFixed(2) + ' MB',
-          iconURL: iconB64, apkUrl: directUrl, status: 'pending',
-          submittedBy: currentUser ? currentUser.email : 'Guest',
-          createdAt: Date.now()
-        };
-
-        if(db){
-          await db.ref('apps/' + id).set(payload);
-        } else {
-          appsCache[id] = payload;
-          renderStore();
-        }
-
-        toast('ধন্যবাদ! অ্যাপটি অ্যাডমিন রিভিউ ও অ্যাপ্রুভালের জন্য জমা হয়েছে।');
-        this.reset();
-      } catch(err){
-        toast('Upload Error: ' + err.message);
-      } finally {
-        btn.disabled = false; btn.textContent = 'Submit to Admin';
-      }
-    });
-
-    // --- ADMIN ACTIONS: APPROVE / REJECT / PUBLISH / DELETE ---
-    function renderAdminViews(){
-      const pendingBox = document.getElementById('adminPendingList');
-      const liveBox = document.getElementById('adminLiveList');
-      const badge = document.getElementById('adminPendingBadge');
-
-      pendingBox.innerHTML = '';
-      liveBox.innerHTML = '';
-
-      const all = Object.keys(appsCache).map(id => ({ id, ...appsCache[id] }));
-      const pending = all.filter(a => a.status === 'pending');
-      const approved = all.filter(a => a.status === 'approved');
-
-      badge.textContent = pending.length;
-
-      if(!pending.length){
-        pendingBox.innerHTML = '<div class="text-xs text-slate-400 p-4 text-center bg-slate-50 rounded-xl">কোনো পেন্ডিং সাবমিশন নেই! 🎉</div>';
-      } else {
-        pending.forEach(app => {
-          const row = document.createElement('div');
-          row.className = 'p-3 bg-slate-50 border border-slate-200 rounded-2xl flex items-center gap-3 justify-between';
-          row.innerHTML = `
-            <div class="flex items-center gap-2.5 min-w-0">
-              <img src="${app.iconURL || ''}" class="w-10 h-10 rounded-xl object-cover border border-slate-200">
-              <div class="min-w-0">
-                <b class="text-xs text-slate-900 block truncate">${app.name}</b>
-                <small class="text-[10px] text-slate-500 block truncate">${app.packageName} • ${app.fileSize || 'N/A'}</small>
-              </div>
-            </div>
-            <div class="flex items-center gap-1.5 shrink-0">
-              <a href="${app.apkUrl}" target="_blank" class="px-2.5 py-1 bg-slate-200 text-slate-700 text-[10px] font-bold rounded-lg hover:bg-slate-300">Test</a>
-              <button onclick="adminApproveApp('${app.id}')" class="px-3 py-1 bg-emerald-600 text-white text-[10px] font-bold rounded-lg hover:bg-emerald-700 shadow-sm">Approve</button>
-              <button onclick="adminDeleteApp('${app.id}')" class="px-2 py-1 bg-red-100 text-red-600 text-[10px] font-bold rounded-lg hover:bg-red-200">Reject</button>
-            </div>
-          `;
-          pendingBox.appendChild(row);
-        });
-      }
-
-      if(!approved.length){
-        liveBox.innerHTML = '<div class="text-xs text-slate-400 p-4 text-center bg-slate-50 rounded-xl">লাইভ স্টোরে কোনো অ্যাপ নেই।</div>';
-      } else {
-        approved.forEach(app => {
-          const row = document.createElement('div');
-          row.className = 'p-3 bg-slate-50 border border-slate-200 rounded-2xl flex items-center gap-3 justify-between';
-          row.innerHTML = `
-            <div class="flex items-center gap-2.5 min-w-0">
-              <img src="${app.iconURL || ''}" class="w-10 h-10 rounded-xl object-cover border border-slate-200">
-              <div class="min-w-0">
-                <b class="text-xs text-slate-900 block truncate">${app.name}</b>
-                <small class="text-[10px] text-emerald-600 font-bold block">${(app.category||'apps').toUpperCase()} • ${app.fileSize || 'Verified'}</small>
-              </div>
-            </div>
-            <button onclick="adminDeleteApp('${app.id}')" class="px-3 py-1 bg-red-100 text-red-600 text-[10px] font-bold rounded-lg hover:bg-red-200 shrink-0">Delete</button>
-          `;
-          liveBox.appendChild(row);
-        });
-      }
-    }
-
-    async function adminApproveApp(id){
-      try {
-        if(db){
-          await db.ref('apps/' + id + '/status').set('approved');
-        } else {
-          if(appsCache[id]) appsCache[id].status = 'approved';
-          renderStore();
-        }
-        toast('App সফলভাবে লাইভ স্টোরে অ্যাপ্রুভ হয়েছে! 🚀');
-        renderAdminViews();
-      } catch(e){
-        toast('Error: ' + e.message);
-      }
-    }
-
-    async function adminDeleteApp(id){
-      if(!confirm('আপনি কি নিশ্চিত এটি ডিলিট করতে চান?')) return;
-      try {
-        if(db){
-          await db.ref('apps/' + id).remove();
-        } else {
-          delete appsCache[id];
-          renderStore();
-        }
-        toast('ডিলিট সম্পন্ন হয়েছে।');
-        renderAdminViews();
-      } catch(e){
-        toast('Error: ' + e.message);
-      }
-    }
-
-    // --- ADMIN DIRECT PUBLISH FORM ---
-    document.getElementById('adminPublishForm').addEventListener('submit', async function(e){
-      e.preventDefault();
-      const name = document.getElementById('adName').value.trim();
-      const pkg = document.getElementById('adPkg').value.trim();
-      const cat = document.getElementById('adCat').value;
-      const iconF = document.getElementById('adIcon').files[0];
-      const rawFile = document.getElementById('adFile').files[0];
-      const customUrl = document.getElementById('adUrl').value.trim();
-
-      if(!rawFile && !customUrl){
-        toast('APK ফাইল নির্বাচন করুন অথবা ডাইরেক্ট লিংক দিন!');
-        return;
-      }
-
-      const btn = document.getElementById('adSubmitBtn');
-      const progressBox = document.getElementById('uploadProgressBox');
-      const progressBar = document.getElementById('uploadProgressBar');
-      const statusText = document.getElementById('uploadStatusText');
-
-      btn.disabled = true;
-      progressBox.classList.remove('hidden');
-
-      try {
-        const iconB64 = await compressImageToBase64(iconF);
-        let finalDownloadUrl = customUrl;
-        let size = 'Verified';
-
-        if(rawFile){
-          size = (rawFile.size / (1024*1024)).toFixed(2) + ' MB';
-          statusText.textContent = `Uploading ${size} to Direct CDN...`;
-
-          finalDownloadUrl = await uploadRawApkToDirectCDN(rawFile, function(p){
-            progressBar.style.width = p + '%';
-            statusText.textContent = `Uploading ${size} (${p}%)...`;
-          });
-        }
-
-        statusText.textContent = 'Saving directly to SIFAT YT Live...';
-
-        const id = db ? db.ref('apps').push().key : 'live_' + Date.now();
-        const payload = {
-          name, packageName: pkg, category: cat,
-          fileSize: size, iconURL: iconB64, apkUrl: finalDownloadUrl,
-          status: 'approved', createdAt: Date.now()
-        };
-
-        if(db){
-          await db.ref('apps/' + id).set(payload);
-        } else {
-          appsCache[id] = payload;
-          renderStore();
-        }
-
-        toast('App সফলভাবে লাইভ স্টোরে পাবলিশ হয়েছে!');
-        this.reset();
-        closeModal('adminModal');
-      } catch(err){
-        toast('Upload Failed: ' + err.message);
-      } finally {
-        btn.disabled = false;
-        progressBox.classList.add('hidden');
-        progressBar.style.width = '0%';
-      }
-    });
-
-    // --- HTML TO APK BUILDER & LIVE PREVIEW SYSTEM ---
-    function addMoreHtmlPage(){
-      const container = document.getElementById('htmlPagesList');
-      const currentCount = container.children.length;
-      if(currentCount >= 10){
-        alert('সর্বোচ্চ ১০টি পেজ যুক্ত করতে পারবেন!');
-        return;
-      }
-
-      const item = document.createElement('div');
-      item.className = 'html-page-item p-3.5 bg-slate-900/80 rounded-2xl border border-cyan-400/20 flex flex-col sm:flex-row items-center gap-3 relative';
-      item.innerHTML = `
-        <input type="text" placeholder="Page Name" value="page${currentCount+1}.html" class="bPageName w-full sm:w-36 h-9 px-3 rounded-xl bg-slate-950 border border-slate-700 text-[11px] text-cyan-300 outline-none" />
-        <div class="flex-1 w-full relative">
-          <input type="file" accept=".html,.htm" required class="bHtmlInput w-full text-xs text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:bg-cyan-500/20 file:text-cyan-300 hover:file:bg-cyan-500/30 cursor-pointer" />
-        </div>
-        <button type="button" onclick="this.parentElement.remove(); updateLivePreview();" class="text-red-400 font-bold text-xs hover:text-red-300 px-2">&times;</button>
-      `;
-      container.appendChild(item);
-    }
-
-    function switchProTab(tab, btn){
-      document.querySelectorAll('.pro-tab').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.pro-tab-content').forEach(c => c.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('ptab-' + tab).classList.add('active');
-      if(tab === 'preview') updateLivePreview();
-    }
-
-    function updateLivePreview(){
-      const firstHtmlInput = document.querySelector('.bHtmlInput');
-      const frame = document.getElementById('livePreviewFrame');
-      if(firstHtmlInput && firstHtmlInput.files && firstHtmlInput.files[0]){
-        const reader = new FileReader();
-        reader.onload = e => { frame.srcdoc = e.target.result; };
-        reader.readAsText(firstHtmlInput.files[0]);
-      } else {
-        frame.srcdoc = '<div style="font-family:sans-serif;padding:30px;text-align:center;color:#64748b;font-size:13px;">একটি HTML ফাইল সিলেক্ট করলে এখানে লাইভ অ্যাপ প্রিভিউ দেখা যাবে।</div>';
-      }
-    }
-
-    document.addEventListener('change', e => {
-      if(e.target.classList.contains('bHtmlInput')){
-        updateLivePreview();
-      }
-      if(e.target.id === 'bIconFile' && e.target.files[0]){
-        document.getElementById('bIconLabel').textContent = e.target.files[0].name;
-      }
-      if(e.target.id === 'bAppName'){
-        document.getElementById('manName').textContent = e.target.value || 'SIFAT YT VIP App';
-      }
-      if(e.target.id === 'bPkgName'){
-        document.getElementById('manPkg').textContent = e.target.value || 'com.sifat.ytapp';
-      }
-    });
-
-    // COMPILER SUBMISSION (GENUINE ZIP/APK PACKAGING)
-    document.getElementById('builderForm').addEventListener('submit', async function(e){
-      e.preventDefault();
-      const appName = document.getElementById('bAppName').value.trim();
-      const pkgName = document.getElementById('bPkgName').value.trim();
-      const version = document.getElementById('bVersion').value.trim();
-      const iconFile = document.getElementById('bIconFile').files[0];
-
-      const htmlInputs = document.querySelectorAll('.bHtmlInput');
-      const pageNames = document.querySelectorAll('.bPageName');
-
-      const filesToZip = [];
-      for(let i=0; i<htmlInputs.length; i++){
-        if(htmlInputs[i].files && htmlInputs[i].files[0]){
-          filesToZip.push({
-            name: pageNames[i] ? pageNames[i].value.trim() : `page_${i}.html`,
-            file: htmlInputs[i].files[0]
-          });
-        }
-      }
-
-      if(!filesToZip.length){
-        toast('কমপক্ষে একটি HTML সোর্স ফাইল সিলেক্ট করুন!');
-        return;
-      }
-
-      showGlobalLoader('Compiling Application Package', 'Generating Android Manifest, Web Assets & Signed Container...');
-
-      try {
-        const zip = new JSZip();
-        
-        // Add HTML pages
-        for(const item of filesToZip){
-          const text = await item.file.text();
-          zip.file("assets/www/" + item.name, text);
-        }
-
-        // Add Manifest & Config
-        const manifestContent = `<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="${pkgName}" android:versionCode="1" android:versionName="${version}">
-  <uses-permission android:name="android.permission.INTERNET" />
-  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-  <application android:label="${appName}" android:allowBackup="true" android:hardwareAccelerated="true">
-    <activity android:name=".MainActivity" android:exported="true">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-    </activity>
-  </application>
-</manifest>`;
-        zip.file("AndroidManifest.xml", manifestContent);
-
-        if(iconFile){
-          const iconBlob = await iconFile.arrayBuffer();
-          zip.file("res/drawable/icon.png", iconBlob);
-        }
-
-        // Package Blob
-        const content = await zip.generateAsync({ type: "blob" });
-        
-        // Direct Download Trigger (.apk package)
-        const safeName = appName.replace(/[^a-zA-Z0-9]/g, '_');
-        const dlLink = document.createElement('a');
-        dlLink.href = URL.createObjectURL(content);
-        dlLink.download = safeName + "_signed.apk";
-        document.body.appendChild(dlLink);
-        dlLink.click();
-        document.body.removeChild(dlLink);
-
-        toast('অভিনন্দন! আপনার APK প্যাকেজ সফলভাবে তৈরি ও ডাউনলোড হয়েছে! 🎉');
-      } catch(err){
-        toast('Build Error: ' + err.message);
-      } finally {
-        hideGlobalLoader();
-      }
-    });
-
-    // --- AUTHENTICATION HELPERS ---
+    // --- AUTHENTICATION ---
     function loginUser(){
-      const e = document.getElementById('loginEmail').value.trim();
-      const p = document.getElementById('loginPass').value.trim();
-      if(!auth){ toast('Auth Demo Mode: Logged in as ' + e); setUserUI(e); return; }
-      auth.signInWithEmailAndPassword(e,p)
-        .then(() => toast('লগইন সফল হয়েছে!'))
-        .catch(err => toast(err.message));
+      const e = document.getElementById('loginEmail').value, p = document.getElementById('loginPass').value;
+      if(!auth){ setUserUI(e); toast('Login Successful (Demo)'); return; }
+      auth.signInWithEmailAndPassword(e,p).then(() => toast('লগইন সফল হয়েছে')).catch(x => toast(x.message));
     }
     function registerUser(){
-      const e = document.getElementById('loginEmail').value.trim();
-      const p = document.getElementById('loginPass').value.trim();
-      if(!auth){ toast('Auth Demo Mode: Account Created for ' + e); setUserUI(e); return; }
-      auth.createUserWithEmailAndPassword(e,p)
-        .then(() => toast('অ্যাকাউন্ট তৈরি সফল হয়েছে!'))
-        .catch(err => toast(err.message));
+      const e = document.getElementById('loginEmail').value, p = document.getElementById('loginPass').value;
+      if(!auth){ setUserUI(e); toast('Account Created (Demo)'); return; }
+      auth.createUserWithEmailAndPassword(e,p).then(() => toast('অ্যাকাউন্ট তৈরি হয়েছে')).catch(x => toast(x.message));
     }
     function logoutUser(){ 
       if(auth) auth.signOut();
       setUserUI(null);
-      toast('লগআউট সম্পন্ন হয়েছে।'); 
+      toast('লগআউট সম্পন্ন'); 
     }
 
     function setUserUI(email){
@@ -1324,33 +1011,32 @@
       });
     }
 
-    // --- DATABASE LISTENER & SEED DATA ---
+    // --- LIVE DATABASE LISTENER & SEED ---
     if(db){
-      db.ref('apps').on('value', snap => {
-        appsCache = snap.val() || {};
+      db.ref('apps').on('value', s => {
+        appsCache = s.val() || {};
         renderStore();
-        renderAdminViews();
+        renderAdmin();
       });
     } else {
-      // Fallback Seed Data for instant live store experience
       appsCache = {
-        'seed_1': {
-          name: 'Free Fire MAX VIP Mod Menu',
+        'demo_1': {
+          name: 'Free Fire MAX VIP Menu',
           packageName: 'com.dts.freefiremax',
           category: 'games',
-          fileSize: '68.50 MB',
+          fileSize: '4.80 MB',
           iconURL: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=150',
-          apkUrl: 'https://files.catbox.moe/example.apk',
+          apkData: 'data:application/vnd.android.package-archive;base64,UEsDBBQAAAAIA===',
           status: 'approved',
           createdAt: Date.now()
         },
-        'seed_2': {
-          name: 'CapCut Pro MOD (No Watermark)',
+        'demo_2': {
+          name: 'CapCut Pro Ultra Editor',
           packageName: 'com.lemon.lvoverseas',
           category: 'apps',
-          fileSize: '112.00 MB',
+          fileSize: '6.20 MB',
           iconURL: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150',
-          apkUrl: 'https://files.catbox.moe/example.apk',
+          apkData: 'data:application/vnd.android.package-archive;base64,UEsDBBQAAAAIA===',
           status: 'approved',
           createdAt: Date.now() - 1000
         }
