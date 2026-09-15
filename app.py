@@ -3,6 +3,7 @@ import shutil
 import subprocess
 import uuid
 import zipfile
+import urllib.request
 from flask import Flask, request, send_file, render_template_string
 
 app = Flask(__name__)
@@ -10,7 +11,23 @@ app = Flask(__name__)
 UPLOAD_DIR = "/tmp/generated_apks"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-# ডিবাগ কীস্টোর তৈরি (যদি না থাকে)
+# বেস টেমপ্লেট APK লিঙ্ক (অটোমেটিক ডাউনলোড হবে)
+BASE_APK_PATH = "/tmp/base_template.apk"
+BASE_APK_URL = "https://raw.githubusercontent.com/julian-klode/native-webview/main/app-release-unsigned.apk"
+
+def ensure_base_apk():
+    """যদি base_template.apk না থাকে তবে অটো ডাউনলোড করবে"""
+    if not os.path.exists(BASE_APK_PATH):
+        try:
+            # একটি লাইটওয়েট ওপেন-সোর্স রেডিমেড WebView APK নামানো হচ্ছে
+            fallback_url = "https://github.com/theapache64/webview-template/releases/download/v1.0.0/app-release.apk"
+            urllib.request.urlretrieve(fallback_url, BASE_APK_PATH)
+        except Exception:
+            # ব্যাকআপ লিঙ্ক
+            backup_url = "https://github.com/Shouko/WebView-Sample/releases/download/1.0/app-release.apk"
+            urllib.request.urlretrieve(backup_url, BASE_APK_PATH)
+
+# ডিবাগ কীস্টোর তৈরি (অ্যান্ড্রয়েড সিগনেচারের জন্য)
 KEYSTORE_PATH = "/tmp/debug.keystore"
 if not os.path.exists(KEYSTORE_PATH):
     subprocess.run([
@@ -25,7 +42,6 @@ if not os.path.exists(KEYSTORE_PATH):
         "-dname", "CN=Android Debug,O=Android,C=US"
     ], check=True)
 
-# HTML ওয়েব পেজের ডিজাইন (UI)
 HTML_PAGE = """
 <!DOCTYPE html>
 <html lang="bn">
@@ -52,7 +68,7 @@ HTML_PAGE = """
             <input type="text" name="app_name" value="MyGameApp" required>
             
             <label style="margin-top: 15px; display:block;">HTML কোড দিন:</label>
-            <textarea name="html_code" required><h1>স্বাগতম! আমার নতুন অ্যাপ</h1><p>এটি কাজ করছে!</p></textarea>
+            <textarea name="html_code" required><h1>Game Loaded!</h1><p>Welcome to Sifat Game App.</p></textarea>
             
             <button type="submit">APK তৈরি এবং ডাউনলোড করুন</button>
         </form>
@@ -62,34 +78,31 @@ HTML_PAGE = """
 """
 
 def build_and_sign_apk(html_code, app_name):
+    ensure_base_apk()
+    
     unique_id = str(uuid.uuid4())[:8]
     work_dir = f"/tmp/build_{unique_id}"
     os.makedirs(work_dir, exist_ok=True)
-
-    base_apk = "base_template.apk"
-    if not os.path.exists(base_apk):
-        raise FileNotFoundError("base_template.apk ফাইলটি সার্ভারে পাওয়া যায়নি!")
 
     temp_apk = os.path.join(work_dir, "temp.apk")
     aligned_apk = os.path.join(work_dir, "aligned.apk")
     final_apk = os.path.join(UPLOAD_DIR, f"{app_name}_{unique_id}.apk")
 
-    shutil.copy(base_apk, temp_apk)
+    shutil.copy(BASE_APK_PATH, temp_apk)
 
-    # HTML ফাইল তৈরি
+    # HTML ফাইল যোগ করা
     assets_dir = os.path.join(work_dir, "assets")
     os.makedirs(assets_dir, exist_ok=True)
     with open(os.path.join(assets_dir, "index.html"), "w", encoding="utf-8") as f:
         f.write(html_code)
 
-    # APK-এর ভেতর index.html ইনজেক্ট করা
     with zipfile.ZipFile(temp_apk, 'a') as zip_ref:
         zip_ref.write(os.path.join(assets_dir, "index.html"), "assets/index.html")
 
     # Zipalign করা
     subprocess.run(["zipalign", "-f", "-p", "4", temp_apk, aligned_apk], check=True)
 
-    # V2/V3 Signature যুক্ত করা (যাতে Parse Error না আসে)
+    # সাইন করা
     subprocess.run([
         "apksigner", "sign",
         "--ks", KEYSTORE_PATH,
