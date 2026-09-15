@@ -2,13 +2,13 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
-  <title>SIFAT YT - Official Store & Real HTML to APK Compiler</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5, user-scalable=yes" />
+  <title>SIFAT YT - Official Store & Enterprise HTML to APK Builder</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
@@ -21,15 +21,12 @@
       theme: {
         extend: {
           colors: {
-            primary: '#00e5ff',
-            sifat: '#00875f',
-            'sifat-dark': '#006c4c',
-            darkBg: '#040d1a',
-            darkCard: '#091524',
-          },
-          fontFamily: {
-            sans: ['Plus Jakarta Sans', 'sans-serif'],
-            mono: ['Fira Code', 'monospace']
+            primary: '#00875f',
+            'primary-dark': '#006c4c',
+            'primary-light': '#e6f4ea',
+            dark: '#1e293b',
+            orange: '#f97316',
+            accent: '#00e5ff',
           }
         }
       }
@@ -37,106 +34,285 @@
   </script>
 
   <style>
+    :root {
+      --bg-base: #030b16;
+      --card-bg: rgba(10, 25, 47, 0.7);
+      --border-light: rgba(0, 229, 255, 0.2);
+      --border-hover: rgba(0, 229, 255, 0.5);
+      --text-primary: #f0f6fc;
+      --text-secondary: #8b949e;
+      --accent: #00e5ff;
+      --accent-glow: rgba(0, 229, 255, 0.4);
+    }
+
     * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; }
-    .max-w-gp { max-width: 1180px; margin: 0 auto; }
+    body { font-family: 'Inter', sans-serif; }
+    .max-w-gp { max-width: 1140px; margin: 0 auto; }
     .hide-sb::-webkit-scrollbar { display: none; }
     .hide-sb { -ms-overflow-style: none; scrollbar-width: none; }
 
-    .app-icon-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-    }
+    /* Store Grid */
+    .app-icon-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
     @media (min-width: 640px) { .app-icon-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; } }
     @media (min-width: 768px) { .app-icon-grid { grid-template-columns: repeat(6, 1fr); gap: 18px; } }
 
     .app-icon-card { display: flex; flex-direction: column; align-items: center; text-align: center; text-decoration: none; cursor: pointer; }
     .app-icon-card__thumb {
-      width: 72px; height: 72px; border-radius: 22px; overflow: hidden;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; background: #fff;
-      transition: all .25s ease;
+      width: 72px; height: 72px; border-radius: 20px; overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid #f1f5f9; background: #f8fafc;
     }
-    .app-icon-card:hover .app-icon-card__thumb { transform: translateY(-4px) scale(1.05); box-shadow: 0 10px 25px rgba(0, 135, 95, 0.2); }
+    .app-icon-card__thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .2s ease; }
+    .app-icon-card:hover .app-icon-card__thumb img { transform: scale(1.06); }
     .app-icon-card__name {
-      font-size: 12px; font-weight: 700; color: #1e293b; margin-top: 7px;
+      font-size: 12px; font-weight: 600; color: #1e293b; margin-top: 6px;
       width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
 
     .page-view { display: none; }
-    .page-view.active { display: block; animation: fadeIn .25s ease-out forwards; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .page-view.active { display: block; animation: fadeIn .2s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-    .builder-box {
-      background: #040d1a;
-      border: 1px solid rgba(0, 229, 255, 0.25);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-    }
-    .device-screen {
-      width: min(270px, 100%);
-      height: 440px;
-      margin: 0 auto;
-      border: 3px solid #1e293b;
-      border-radius: 32px;
-      background: #000;
+    /* ==================== BUILDER STYLES ==================== */
+    .cyber-builder-wrapper {
+      background-color: var(--bg-base);
+      background-image: 
+          radial-gradient(circle at 15% 50%, rgba(0, 229, 255, 0.08) 0%, transparent 25%),
+          radial-gradient(circle at 85% 30%, rgba(58, 134, 255, 0.08) 0%, transparent 25%);
+      color: var(--text-primary);
+      border-radius: 28px;
+      padding: 16px;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 0 25px rgba(0, 229, 255, 0.15);
+      margin-bottom: 24px;
     }
 
-    /* WiFi Loader Animation */
+    .builder-container {
+      max-width: 520px;
+      width: 100%;
+      margin: 0 auto;
+      border-radius: 24px;
+      padding: 36px 28px;
+      position: relative;
+      z-index: 10;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 640px;
+    }
+
+    .builder-container::before {
+      content: "";
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      background: conic-gradient(from 0deg, transparent 70%, var(--accent) 100%);
+      animation: rotate_9018 4s linear infinite;
+      z-index: -2;
+      will-change: transform;
+    }
+
+    .builder-container::after {
+      content: "";
+      position: absolute;
+      inset: 2px;
+      background: #040d1a;
+      border-radius: 22px;
+      z-index: -1;
+    }
+
+    @keyframes rotate_9018 { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    .header-build { text-align: center; margin-bottom: 28px; }
+    .header-build h1 {
+      font-size: 2rem; font-weight: 700; letter-spacing: -0.05em; color: var(--text-primary); margin-bottom: 6px;
+      background: linear-gradient(135deg, #ffffff, var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .header-build p { color: var(--text-secondary); font-size: 0.9rem; font-weight: 300; }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 400; font-size: 0.85rem; color: var(--text-secondary); letter-spacing: 0.02em; }
+    
+    .form-control {
+      width: 100%; padding: 14px 16px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-light);
+      border-radius: 12px; color: var(--text-primary); font-size: 0.95rem; transition: all 0.2s ease;
+    }
+    .form-control:focus { outline: none; border-color: var(--border-hover); background: rgba(0, 229, 255, 0.05); box-shadow: 0 0 0 2px var(--accent-glow); }
+    .form-control::placeholder { color: rgba(255, 255, 255, 0.25); }
+
+    .animated-input-wrapper {
+      position: relative; width: 100%; border-radius: 13px; padding: 1px; overflow: hidden; display: flex; background: rgba(0, 229, 255, 0.1);
+    }
+    .animated-input-wrapper::before {
+      content: ""; position: absolute; width: 300%; height: 300%; top: -100%; left: -100%;
+      background: conic-gradient(from 0deg, transparent 70%, var(--accent) 100%);
+      animation: rotate_9018 3s linear infinite; z-index: 0; will-change: transform;
+    }
+    .animated-input-wrapper .form-control { position: relative; z-index: 1; margin: 0; border: none; border-radius: 12px; background: #040d1a; width: 100%; }
+
+    .file-upload-wrapper {
+      position: relative; width: 100%; height: 110px; border: 1px solid var(--border-light); border-radius: 12px;
+      display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s ease;
+      background: rgba(0, 229, 255, 0.02);
+    }
+    .file-upload-wrapper:hover, .file-upload-wrapper.dragover { border-color: var(--border-hover); background: rgba(0, 229, 255, 0.05); }
+    .file-upload-wrapper input[type="file"] { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2; }
+    .file-upload-icon { margin-bottom: 8px; color: var(--accent); transition: all 0.2s ease; }
+    .file-upload-icon svg { width: 26px; height: 26px; opacity: 0.8; filter: drop-shadow(0 0 5px rgba(0, 229, 255, 0.4)); }
+    .file-upload-text { color: var(--text-secondary); font-size: 0.85rem; font-weight: 400; text-align: center; pointer-events: none; }
+    .file-upload-subtext { font-size: 0.72rem; color: rgba(255, 255, 255, 0.3); margin-top: 4px; pointer-events: none; }
+    .file-selected-state { color: var(--text-primary) !important; font-weight: 600; }
+
+    .btn-submit {
+      width: 100%; padding: 15px; margin-top: 12px; background: var(--accent); color: #030b16; border: none;
+      border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s ease;
+      display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+    }
+    .btn-submit:hover { background: #33eeff; transform: translateY(-2px); box-shadow: 0 0 25px rgba(0, 229, 255, 0.5); }
+    .btn-submit:active { transform: translateY(0); }
+
+    .loading-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 9999;
+      display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .loading-overlay.active { opacity: 1; pointer-events: all; }
+
     #wifi-loader {
-      width: 64px; height: 64px; border-radius: 50px; position: relative;
-      display: flex; justify-content: center; align-items: center; margin-bottom: 16px;
+      --background: transparent; --front-color: var(--accent); --back-color: rgba(0, 229, 255, 0.2);
+      width: 64px; height: 64px; border-radius: 50px; position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 20px;
     }
-    #wifi-loader svg { position: absolute; }
-    #wifi-loader svg circle {
-      fill: none; stroke-width: 6px; stroke-linecap: round; stroke-linejoin: round;
-      transform: rotate(-100deg); transform-origin: center;
-    }
-    #wifi-loader svg circle.back { stroke: rgba(0, 229, 255, 0.2); }
-    #wifi-loader svg circle.front { stroke: #00e5ff; }
+    #wifi-loader svg { position: absolute; display: flex; justify-content: center; align-items: center; }
+    #wifi-loader svg circle { fill: none; stroke-width: 6px; stroke-linecap: round; stroke-linejoin: round; transform: rotate(-100deg); transform-origin: center; }
+    #wifi-loader svg circle.back { stroke: var(--back-color); }
+    #wifi-loader svg circle.front { stroke: var(--front-color); }
     #wifi-loader svg.circle-outer { height: 86px; width: 86px; }
     #wifi-loader svg.circle-outer circle { stroke-dasharray: 62.75 188.25; }
+    #wifi-loader svg.circle-outer circle.back { animation: circle-outer135 1.8s ease infinite 0.3s; }
     #wifi-loader svg.circle-outer circle.front { animation: circle-outer135 1.8s ease infinite 0.15s; }
-    @keyframes circle-outer135 {
-      0% { stroke-dashoffset: 25; } 25% { stroke-dashoffset: 0; }
-      65% { stroke-dashoffset: 301; } 100% { stroke-dashoffset: 276; }
+    #wifi-loader svg.circle-middle { height: 60px; width: 60px; }
+    #wifi-loader svg.circle-middle circle { stroke-dasharray: 42.5 127.5; }
+    #wifi-loader svg.circle-middle circle.back { animation: circle-middle6123 1.8s ease infinite 0.25s; }
+    #wifi-loader svg.circle-middle circle.front { animation: circle-middle6123 1.8s ease infinite 0.1s; }
+    #wifi-loader svg.circle-inner { height: 34px; width: 34px; }
+    #wifi-loader svg.circle-inner circle { stroke-dasharray: 22 66; }
+    #wifi-loader svg.circle-inner circle.back { animation: circle-inner162 1.8s ease infinite 0.2s; }
+    #wifi-loader svg.circle-inner circle.front { animation: circle-inner162 1.8s ease infinite 0.05s; }
+
+    @keyframes circle-outer135 { 0% { stroke-dashoffset: 25; } 25% { stroke-dashoffset: 0; } 65% { stroke-dashoffset: 301; } 100% { stroke-dashoffset: 276; } }
+    @keyframes circle-middle6123 { 0% { stroke-dashoffset: 17; } 25% { stroke-dashoffset: 0; } 65% { stroke-dashoffset: 204; } 100% { stroke-dashoffset: 187; } }
+    @keyframes circle-inner162 { 0% { stroke-dashoffset: 9; } 25% { stroke-dashoffset: 0; } 65% { stroke-dashoffset: 106; } 100% { stroke-dashoffset: 97; } }
+
+    .loading-text { font-size: 1rem; font-weight: 500; color: var(--text-primary); letter-spacing: 0.05em; }
+    .loading-subtext { margin-top: 8px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 300; }
+
+    .loader { position: relative; width: 80px; height: 80px; transform: rotate(45deg); margin-bottom: 26px; }
+    .loader-square {
+      position: absolute; top: 0; left: 0; width: 24px; height: 24px; margin: 2px; border-radius: 4px;
+      background: var(--accent); box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+      animation: square-animation 10s ease-in-out infinite both;
     }
+    @keyframes square-animation {
+      0%, 10.5%, 100% { left: 0; top: 0; } 12.5%, 23% { left: 26px; top: 0; } 25%, 35.5% { left: 52px; top: 0; }
+      37.5%, 48% { left: 52px; top: 26px; } 50%, 60.5% { left: 26px; top: 26px; } 62.5%, 73% { left: 26px; top: 52px; }
+      75%, 85.5% { left: 0; top: 52px; } 87.5%, 98% { left: 0; top: 26px; }
+    }
+    .loader-square:nth-of-type(1) { animation-delay: -1.42s; }
+    .loader-square:nth-of-type(2) { animation-delay: -2.85s; }
+    .loader-square:nth-of-type(3) { animation-delay: -4.28s; }
+    .loader-square:nth-of-type(4) { animation-delay: -5.71s; }
+    .loader-square:nth-of-type(5) { animation-delay: -7.14s; }
+    .loader-square:nth-of-type(6) { animation-delay: -8.57s; }
+    .loader-square:nth-of-type(7) { animation-delay: -10s; }
+
+    .success-container { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; animation: fadeUp 0.5s ease forwards; width: 100%; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .success-title { font-size: 1.6rem; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+    .success-desc { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 24px; line-height: 1.4; }
+
+    .btn-download {
+      position: relative; display: flex; align-items: center; justify-content: center; width: 100%; margin: 0 auto 14px auto;
+      border-radius: 14px; background: rgba(0, 229, 255, 0.05); border: 1px solid rgba(0, 229, 255, 0.3); text-decoration: none; overflow: hidden;
+      box-shadow: 0 0 15px rgba(0, 229, 255, 0.1);
+    }
+    .btn-download::before {
+      content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: conic-gradient(from 0deg, transparent 70%, rgba(0, 229, 255, 0.8) 100%); animation: rotate_9018 4s linear infinite; z-index: -2;
+    }
+    .btn-download::after { content: ""; position: absolute; inset: 2px; background: #040d1a; border-radius: 12px; z-index: -1; }
+    .btn-download .btn-content-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 24px; width: 100%; color: var(--accent); font-size: 1rem; font-weight: 700; text-transform: uppercase; }
+
+    .btn-back {
+      display: inline-flex; justify-content: center; align-items: center; width: 100%; padding: 14px; background: rgba(255, 255, 255, 0.03);
+      color: var(--text-secondary); border: 1px solid var(--border-light); text-decoration: none; border-radius: 12px; font-size: 0.9rem; font-weight: 500;
+    }
+
+    /* Pro Panel CSS */
+    .pro-panel{margin:8px 0 20px;border:1px solid rgba(255,255,255,.09);background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.018));border-radius:20px;overflow:hidden;box-shadow:inset 0 1px rgba(255,255,255,.05),0 18px 45px rgba(0,0,0,.22);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+    .pro-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:7px;background:rgba(0,0,0,.18);border-bottom:1px solid rgba(255,255,255,.06)}
+    .pro-tab{border:0;background:transparent;color:#7e8b9a;padding:10px 6px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;transition:.2s}.pro-tab.active{color:#eaffff;background:rgba(0,229,255,.10);box-shadow:inset 0 0 0 1px rgba(0,229,255,.12)}
+    .pro-tab-content{display:none;padding:16px}.pro-tab-content.active{display:block}.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.section-head b{display:block;font-size:12px}.section-head span:not(.live-dot):not(.counter-pill){display:block;color:#697687;font-size:10px;margin-top:2px}.live-dot,.counter-pill{font-size:9px!important;font-weight:800;padding:4px 8px;border-radius:999px;background:rgba(0,229,255,.08);color:#5eeeff!important;border:1px solid rgba(0,229,255,.14)}
+    .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.settings-grid label{font-size:10px;color:#738092;font-weight:700}.pro-input{display:block;width:100%;margin-top:5px;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.22);color:#edf8ff;border-radius:11px;padding:9px;font-size:11px;outline:none}.pro-input:focus{border-color:rgba(0,229,255,.45);box-shadow:0 0 0 3px rgba(0,229,255,.06)}select.pro-input{appearance:none}
+    .toggle-list{margin-top:12px;border-top:1px solid rgba(255,255,255,.06)}.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.055);position:relative}.toggle-row b{display:block;font-size:11px}.toggle-row small{display:block;color:#687585;font-size:9px;margin-top:2px}.toggle-row input{display:none}.toggle-row i{width:36px;height:20px;border-radius:999px;background:#26303b;display:block;position:relative;transition:.2s}.toggle-row i:after{content:"";position:absolute;width:16px;height:16px;left:2px;top:2px;background:#8b949e;border-radius:50%;transition:.2s}.toggle-row input:checked+i{background:rgba(0,229,255,.35)}.toggle-row input:checked+i:after{transform:translateX(16px);background:#eaffff}
+    .page-list{display:grid;gap:6px;margin-bottom:10px}.page-chip{display:flex;align-items:center;gap:8px;padding:9px;border:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.16);border-radius:12px}.page-num{width:24px;height:24px;display:grid;place-items:center;border-radius:8px;background:rgba(0,229,255,.09);color:#67efff;font-size:10px;font-weight:800}.page-chip b{font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.page-chip small{margin-left:auto;color:#637181;font-size:9px}.drop-zone{border:1px dashed rgba(0,229,255,.22);border-radius:13px;padding:15px;text-align:center;background:rgba(0,229,255,.025);transition:.2s}.drop-zone.drag{background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.6)}.drop-icon{display:block;color:#4ceaff;font-size:18px}.drop-zone b{display:block;font-size:10px}.drop-zone small{color:#647180;font-size:9px}
+    .device-wrap{width:min(250px,100%);height:390px;margin:0 auto;padding:6px;border:2px solid #29323d;border-radius:30px;background:#05080c;box-shadow:0 20px 50px #0009;position:relative}.device-notch{position:absolute;z-index:2;top:10px;left:50%;transform:translateX(-50%);width:76px;height:16px;background:#020304;border-radius:0 0 12px 12px}.device-wrap iframe{width:100%;height:100%;border:0;border-radius:24px;background:#fff}.mini-btn{border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.05);color:#c9d7e3;border-radius:9px;padding:6px 10px;font-size:9px;cursor:pointer}.preview-note{font-size:9px;color:#687585;text-align:center;margin-top:8px;line-height:1.4}
+    .build-check{padding:10px 12px;margin-bottom:16px;border:1px solid rgba(255,255,255,.07);border-radius:14px;background:rgba(255,255,255,.025)}.check-title{display:flex;justify-content:space-between;font-size:10px;font-weight:800}.check-title span{color:#768494;font-weight:600}.check-items{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;color:#687585;font-size:9px}.check-items span.ok{color:#64edc7}
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 10000;
+      display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: all; }
+    .custom-modal {
+      background: #040d1a; border: 1px solid var(--border-hover); border-radius: 20px; padding: 36px 26px; max-width: 400px; width: 90%;
+      text-align: center; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 229, 255, 0.15);
+      transform: translateY(20px) scale(0.95); transition: all 0.3s ease; position: relative; overflow: hidden;
+    }
+    .modal-overlay.active .custom-modal { transform: translateY(0) scale(1); }
+    .custom-modal::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+    .modal-icon { width: 56px; height: 56px; margin: 0 auto 16px auto; color: #ff3366; }
+    .modal-icon.warning { color: #ffaa00; }
+    .modal-title { font-size: 1.3rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+    .modal-text { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.4; }
+    .modal-text.bn { font-size: 0.95rem; font-family: sans-serif; margin-bottom: 20px; color: #b0c4de; }
+    .modal-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+    .btn-modal-primary { background: rgba(0, 229, 255, 0.1); color: var(--accent); border: 1px solid var(--accent); padding: 10px 20px; border-radius: 10px; font-weight: 600; text-decoration: none; cursor: pointer; flex: 1; font-size: 0.9rem; }
+    .btn-modal-secondary { background: transparent; color: var(--text-secondary); border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px 20px; border-radius: 10px; font-weight: 500; cursor: pointer; flex: 1; font-size: 0.9rem; }
   </style>
 </head>
 
-<body class="text-slate-900 pb-24 md:pb-10 select-none">
+<body class="bg-white text-dark pb-24 md:pb-10 select-none">
 
   <!-- ==================== HEADER ==================== -->
-  <header class="sticky top-0 bg-white/95 backdrop-blur-md z-40 border-b border-slate-200 shadow-sm">
+  <header class="sticky top-0 bg-white z-40 border-b border-slate-200 shadow-sm">
     <div class="max-w-gp px-4 h-16 flex items-center justify-between">
       
-      <!-- LOGO (5 TAPS UNLOCKS ADMIN) -->
-      <div class="flex items-center gap-2.5 cursor-pointer select-none" onclick="handleAdminTap()">
-        <div class="w-10 h-10 bg-gradient-to-tr from-sifat to-emerald-400 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-md shadow-emerald-700/20">
-          S
-        </div>
-        <div>
-          <h1 class="text-xl font-black tracking-tight text-slate-900 leading-none">
-            SIFAT<span class="text-emerald-600 font-black">.YT</span>
-          </h1>
-          <p class="text-[9px] font-bold text-slate-400 tracking-wider uppercase">Auto APK & MOD Store</p>
-        </div>
+      <!-- LOGO (5 Taps Unlocks Admin) -->
+      <div class="flex items-center gap-2 cursor-pointer select-none" onclick="handleSecretAdminTap()">
+        <div class="w-9 h-9 bg-primary rounded-xl flex items-center justify-center text-white font-black text-lg shadow-md shadow-emerald-700/20">S</div>
+        <h1 class="text-xl font-black tracking-tight text-slate-900 m-0 leading-none">
+          SIFAT<span class="text-primary">.YT</span>
+        </h1>
       </div>
 
-      <!-- SEARCH -->
-      <div class="flex-1 max-w-md mx-6 relative hidden sm:block">
-        <input id="desktopSearch" type="search" placeholder="Search verified apps, games & packages..." oninput="handleSearch(this.value)"
-          class="w-full h-10 bg-slate-100 rounded-full pl-10 pr-4 text-xs font-semibold outline-none border border-slate-200 focus:border-emerald-500 focus:bg-white transition" />
-        <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="currentColor" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <!-- DESKTOP SEARCH -->
+      <div class="flex-1 max-w-md mx-4 relative hidden sm:block">
+        <input id="desktopSearch" type="search" placeholder="Search apps, games & packages..." oninput="handleSearch(this.value)"
+          class="w-full h-10 bg-slate-100 rounded-full pl-10 pr-4 text-xs font-medium outline-none border border-transparent focus:border-primary transition" />
+        <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="currentColor" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 14z"/></svg>
       </div>
 
       <!-- ACTIONS -->
       <div class="flex items-center gap-2">
-        <button onclick="switchPage('build')" class="hidden sm:flex items-center gap-1.5 bg-cyan-50 text-cyan-700 hover:bg-cyan-100 px-4 py-1.5 rounded-full font-bold text-xs border border-cyan-200 transition">
-          <svg class="w-4 h-4 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-          <span>Auto HTML to APK</span>
+        <button onclick="switchPage('build')" class="flex items-center gap-1.5 bg-cyan-50 hover:bg-cyan-100 border border-cyan-200 px-3.5 py-1.5 rounded-full font-bold text-xs text-cyan-700 transition">
+          <svg class="w-4 h-4 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+          <span>Build APK</span>
         </button>
 
         <button onclick="switchPage('upload')" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 px-3.5 py-1.5 rounded-full font-bold text-xs text-slate-700 transition">
@@ -146,61 +322,47 @@
       </div>
 
     </div>
+
+    <!-- MOBILE SEARCH -->
+    <div class="px-4 pb-2.5 sm:hidden">
+      <input id="mobileSearch" type="search" placeholder="Search apps, games & packages..." oninput="handleSearch(this.value)"
+        class="w-full h-9 bg-slate-100 rounded-full px-4 text-xs outline-none border border-transparent focus:border-primary" />
+    </div>
   </header>
 
-  <!-- ==================== MAIN CONTENT ==================== -->
-  <main class="max-w-gp px-4 md:px-6 pt-5">
+  <!-- ==================== MAIN VIEWS ==================== -->
+  <main class="max-w-gp px-4 md:px-6 pt-4">
 
     <!-- 1. HOME VIEW -->
     <section id="view-home" class="page-view active">
-      
-      <!-- HERO BANNER -->
-      <div class="mb-8 rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 p-6 sm:p-8 text-white relative overflow-hidden shadow-xl">
-        <div class="relative z-10 max-w-lg">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-[11px] font-extrabold border border-emerald-500/30 mb-3">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-            SIFAT YT 100% UNCORRUPTED APK STORE
-          </span>
-          <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
-            Real Android APKs & Automated Web to APK Compiler
-          </h2>
-          <p class="text-xs sm:text-sm text-slate-300 mt-2">
-            পার্সিং এরর ছাড়া ১০০% ইনস্টলেবল APK ডাউনলোড করুন অথবা HTML কোড দিয়ে আসল অ্যাপস বিল্ড করুন।
-          </p>
-          <div class="flex items-center gap-3 mt-5">
-            <button onclick="switchPage('games')" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs rounded-xl shadow-lg transition">
-              Explore Games
-            </button>
-            <button onclick="switchPage('build')" class="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl backdrop-blur-md border border-white/15 transition">
-              ✦ Build HTML to APK
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- FEATURED -->
       <div class="mb-8">
         <div class="flex items-center gap-1.5 mb-3">
-          <svg class="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 -960 960 960"><path d="M264-384q0 46 19.5 87.5T338-223q-1-5-1.5-10t-.5-10q0-27 10-50.5t27-42.5l107-120 107 120q17 20 27 43.5t10 49.5q0 5-.5 10.5T622-222q35-29 54.5-71.5T696-384q0-51-17.5-100.5T628-576q-17 11-35.5 17t-40.5 6q-52 0-91.5-32T411-668q-36 33-63 67.5T302-530q-19 36-28.5 73t-9.5 73Zm216 36-53 60q-9 11-14 22.5t-5 25.5q0 30 21 51t51 21q30 0 51-21t21-51q0-14-5-26t-14-22l-53-60Zm0-468v119q0 30 21 51t51 21q17 0 31.5-7t24.5-20l16-20q64 38 104 118.5T768-384q0 120-84 204T480-96q-120 0-204-84t-84-204q0-112 76-226.5T480-816Z"/></svg>
-          <h2 class="text-base font-bold text-slate-900">Featured Applications</h2>
+          <svg class="w-5 h-5 text-orange" fill="currentColor" viewBox="0 -960 960 960"><path d="M264-384q0 46 19.5 87.5T338-223q-1-5-1.5-10t-.5-10q0-27 10-50.5t27-42.5l107-120 107 120q17 20 27 43.5t10 49.5q0 5-.5 10.5T622-222q35-29 54.5-71.5T696-384q0-51-17.5-100.5T628-576q-17 11-35.5 17t-40.5 6q-52 0-91.5-32T411-668q-36 33-63 67.5T302-530q-19 36-28.5 73t-9.5 73Zm216 36-53 60q-9 11-14 22.5t-5 25.5q0 30 21 51t51 21q30 0 51-21t21-51q0-14-5-26t-14-22l-53-60Zm0-468v119q0 30 21 51t51 21q17 0 31.5-7t24.5-20l16-20q64 38 104 118.5T768-384q0 120-84 204T480-96q-120 0-204-84t-84-204q0-112 76-226.5T480-816Z"/></svg>
+          <h2 class="text-base font-bold text-slate-900">Indispensable on your phone</h2>
         </div>
         <div id="homeFeaturedRow" class="flex gap-4 overflow-x-auto snap-x hide-sb pb-2"></div>
       </div>
 
       <!-- LATEST GAMES -->
       <div class="mb-8">
-        <div class="flex items-center justify-between mb-3 border-b border-slate-200 pb-2">
-          <h2 class="text-base font-bold text-slate-900">Latest Games</h2>
-          <button onclick="switchPage('games')" class="text-xs font-bold text-emerald-600 hover:underline">See More</button>
+        <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
+          <div class="flex items-center gap-1.5">
+            <svg class="w-5 h-5 text-orange" fill="currentColor" viewBox="0 -960 960 960"><path d="M386.5-638.72q-38.5-38.72-38.5-93.5t38.72-93.28q38.72-38.5 93.5-38.5t93.28 38.72q38.5 38.72 38.5 93.5t-38.72 93.28q-38.72 38.5-93.5 38.5t-93.28-38.72Zm0 504q-38.5-38.72-38.5-93.5t38.72-93.28q38.72-38.5 93.5-38.5t93.28 38.72q38.5 38.72 38.5 93.5t-38.72 93.28Q534.56-96 479.78-96t-93.28-38.72Zm136-50.78Q540-203 540-228t-17.5-42.5Q505-288 480-288t-42.5 17.5Q420-253 420-228t17.5 42.5Q455-168 480-168t42.5-17.5ZM731.78-348q-54.78 0-93.28-38.72t-38.5-93.5q0-54.78 38.72-93.28t93.5-38.5q54.78 0 93.28 38.72t38.5 93.5q0 54.78-38.72 93.28t-93.5 38.5Z"/></svg>
+            <h2 class="text-base font-bold text-slate-900">Latest Games</h2>
+          </div>
+          <button onclick="switchPage('games')" class="text-xs font-bold text-primary hover:underline">See More</button>
         </div>
         <div id="homeGamesGrid" class="app-icon-grid"></div>
       </div>
 
       <!-- LATEST APPS -->
       <div class="mb-10">
-        <div class="flex items-center justify-between mb-3 border-b border-slate-200 pb-2">
-          <h2 class="text-base font-bold text-slate-900">Verified Apps</h2>
-          <button onclick="switchPage('apps')" class="text-xs font-bold text-emerald-600 hover:underline">See More</button>
+        <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
+          <div class="flex items-center gap-1.5">
+            <svg class="w-5 h-5 text-orange" fill="currentColor" viewBox="0 -960 960 960"><path d="M384-144H216q-29.7 0-50.85-21.15Q144-186.3 144-216v-168q40-2 68-29.5t28-66.5q0-39-28-66.5T144-576v-168q0-29.7 21.15-50.85Q186.3-816 216-816h168q0-40 27.77-68 27.78-28 68-28Q520-912 548-884.16q28 27.84 28 68.16h168q29.7 0 50.85 21.15Q816-773.7 816-744v168q40 0 68 27.77 28 27.78 28 68Q912-440 884.16-412q-27.84 28-68.16 28v168q0 29.7-21.15 50.85Q773.7-144 744-144H576q-2-40-29.38-68t-66.5-28q-39.12 0-66.62 28-27.5 28-29.5 68Z"/></svg>
+            <h2 class="text-base font-bold text-slate-900">Latest Apps</h2>
+          </div>
+          <button onclick="switchPage('apps')" class="text-xs font-bold text-primary hover:underline">See More</button>
         </div>
         <div id="homeAppsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5"></div>
       </div>
@@ -208,283 +370,333 @@
 
     <!-- 2. APPS VIEW -->
     <section id="view-apps" class="page-view">
-      <div class="flex items-center justify-between mb-4 border-b border-slate-200 pb-2">
+      <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-2">
         <h2 class="text-lg font-bold text-slate-900">All Applications</h2>
-        <span id="allAppsCount" class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">0 Apps</span>
+        <span id="allAppsCount" class="text-xs font-bold text-primary">0 Apps</span>
       </div>
       <div id="allAppsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </section>
 
     <!-- 3. GAMES VIEW -->
     <section id="view-games" class="page-view">
-      <div class="flex items-center justify-between mb-4 border-b border-slate-200 pb-2">
+      <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-2">
         <h2 class="text-lg font-bold text-slate-900">All Android Games</h2>
-        <span id="allGamesCount" class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">0 Games</span>
+        <span id="allGamesCount" class="text-xs font-bold text-primary">0 Games</span>
       </div>
       <div id="allGamesList" class="app-icon-grid"></div>
     </section>
 
-    <!-- 4. REAL AUTO HTML TO APK BUILDER VIEW -->
+    <!-- 4. HTML TO APK BUILDER VIEW (FILE 2 EXACT EMBEDDED) -->
     <section id="view-build" class="page-view">
-      <div class="max-w-xl mx-auto">
-        <div class="builder-box rounded-3xl p-6 text-white mb-6">
+      <div class="cyber-builder-wrapper">
+        <div class="builder-container">
           
-          <div class="text-center mb-6">
-            <span class="px-3 py-1 rounded-full bg-cyan-400/10 text-cyan-400 font-mono text-[10px] tracking-widest border border-cyan-400/20 inline-block mb-1.5">REAL ANDROID GRADLE COMPILER</span>
-            <h2 class="text-2xl font-black text-white">Auto HTML to Genuine APK</h2>
-            <p class="text-xs text-slate-400 mt-1">HTML কোড আপলোড করুন — ক্লাউড ইঞ্জিন সরাসরি অ্যান্ড্রয়েডের কমপাইল করা সাইনড APK প্রদান করবে।</p>
+          <!-- Upload Form Section -->
+          <div id="formSection">
+            <div class="header-build">
+              <h1>SIFAT YT</h1>
+              <p>Enterprise HTML to APK Compilation</p>
+            </div>
+
+            <form id="apk-form">
+              <div class="form-group">
+                <label for="appName">Application Name</label>
+                <div class="animated-input-wrapper">
+                  <input type="text" id="appName" class="form-control" placeholder="e.g., Nexus Protocol" autocomplete="off" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Application Icon <span style="opacity: 0.5;">(Optional)</span></label>
+                <div class="file-upload-wrapper" id="iconWrapper">
+                  <div class="file-upload-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <div class="file-upload-text" id="icon-name-display">Upload PNG Asset</div>
+                  <div class="file-upload-subtext">Maximum size: 5MB</div>
+                  <input type="file" id="iconFile" accept=".png">
+                </div>
+              </div>
+
+              <div id="html-uploads-container">
+                <div class="html-upload-block" data-index="0" style="padding: 16px; background: rgba(0, 229, 255, 0.02); border: 1px solid rgba(0, 229, 255, 0.1); border-radius: 12px; margin-bottom: 16px;">
+                  <div class="form-group page-name-group" style="margin-bottom: 12px; display: none;">
+                    <label>Page Name</label>
+                    <input type="text" class="form-control page-name-input" placeholder="e.g., Home">
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label>Source Code (HTML)</label>
+                    <div class="file-upload-wrapper htmlWrapper">
+                      <div class="file-upload-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                        </svg>
+                      </div>
+                      <div class="file-upload-text file-name-display">Upload HTML File</div>
+                      <div class="file-upload-subtext">Single .html or .htm format</div>
+                      <input type="file" class="htmlFile" accept=".html,.htm" required>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SiFAT Pro Upgrade Panel -->
+              <section class="pro-panel" id="proPanel">
+                <div class="pro-tabs" role="tablist">
+                  <button class="pro-tab active" data-tab="design" type="button">✦ Design</button>
+                  <button class="pro-tab" data-tab="pages" type="button">▦ Pages</button>
+                  <button class="pro-tab" data-tab="preview" type="button">◉ Preview</button>
+                </div>
+
+                <div class="pro-tab-content active" id="tab-design">
+                  <div class="section-head"><div><b>App settings</b><span>Personalize your APK</span></div><span class="live-dot">LIVE</span></div>
+                  <div class="settings-grid">
+                    <label>Package name<input id="pkgName" class="pro-input" placeholder="com.example.myapp" value="com.sifat.app"></label>
+                    <label>Version<input id="appVersion" class="pro-input" placeholder="1.0.0" value="1.0.0"></label>
+                    <label>Version code<input id="versionCode" class="pro-input" type="number" min="1" value="1"></label>
+                    <label>Orientation<select id="orientation" class="pro-input"><option value="unspecified">Auto</option><option value="portrait">Portrait</option><option value="landscape">Landscape</option></select></label>
+                  </div>
+                  <div class="toggle-list">
+                    <label class="toggle-row"><span><b>JavaScript</b><small>Enable modern web apps</small></span><input id="jsToggle" type="checkbox" checked><i></i></label>
+                    <label class="toggle-row"><span><b>DOM storage</b><small>Keep localStorage & app data</small></span><input id="storageToggle" type="checkbox" checked><i></i></label>
+                    <label class="toggle-row"><span><b>External links</b><small>Open outside links safely</small></span><input id="linksToggle" type="checkbox" checked><i></i></label>
+                  </div>
+                </div>
+
+                <div class="pro-tab-content" id="tab-pages">
+                  <div class="section-head"><div><b>Page manager</b><span>Up to 10 HTML pages</span></div><span id="pageCounter" class="counter-pill">1 / 10</span></div>
+                  <div id="pageList" class="page-list"></div>
+                  <div class="drop-zone" id="dropZone"><span class="drop-icon">＋</span><b>Drop HTML files here</b><small>or use the upload cards above</small></div>
+                </div>
+
+                <div class="pro-tab-content" id="tab-preview">
+                  <div class="section-head"><div><b>Instant preview</b><span>Preview your first HTML page</span></div><button id="refreshPreview" class="mini-btn" type="button">↻ Refresh</button></div>
+                  <div class="device-wrap"><div class="device-notch"></div><iframe id="livePreview" title="Live preview" sandbox="allow-scripts allow-forms allow-modals"></iframe></div>
+                  <div class="preview-note">Preview runs locally in your browser. Your APK build uses the verified server pipeline.</div>
+                </div>
+              </section>
+
+              <div class="build-check" id="buildCheck">
+                <div class="check-title">Build readiness <span id="checkStatus">Waiting for HTML</span></div>
+                <div class="check-items"><span id="checkFile">○ HTML</span><span id="checkName">○ App name</span><span id="checkIcon">○ Icon optional</span></div>
+              </div>
+
+              <button type="button" class="btn-back" id="add-more-btn" style="margin-top: 0; margin-bottom: 20px; border-style: dashed; cursor: pointer;">
+                + Add More Pages (Max 10)
+              </button>
+
+              <button type="submit" class="btn-submit" id="submit-btn">
+                Compile Application
+              </button>
+            </form>
           </div>
 
-          <form id="autoBuilderForm" class="space-y-4">
-            
-            <!-- SERVER CONFIG -->
-            <div>
-              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">BUILD SERVER URL</label>
-              <input type="text" id="bServerUrl" value="https://sifat5game.onrender.com" placeholder="https://your-build-server.onrender.com" class="w-full h-9 px-3 text-xs font-mono rounded-xl bg-slate-900 border border-slate-700 text-cyan-300 outline-none" />
+          <!-- Success Section -->
+          <div class="success-container" id="successSection">
+            <div class="loader">
+              <div class="loader-square"></div>
+              <div class="loader-square"></div>
+              <div class="loader-square"></div>
+              <div class="loader-square"></div>
+              <div class="loader-square"></div>
+              <div class="loader-square"></div>
+              <div class="loader-square"></div>
             </div>
-
-            <!-- APP NAME -->
-            <div>
-              <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">Application Name</label>
-              <input type="text" id="bName" required placeholder="e.g. My Verified App" class="w-full h-11 px-4 text-xs font-semibold rounded-xl bg-slate-900/90 border border-slate-700 text-white outline-none focus:border-cyan-400 transition" />
+            <div class="success-title">Build Complete</div>
+            <div class="success-desc">Your application package has been successfully compiled and signed.</div>
+            <div class="button-group" style="width: 100%;">
+              <a id="download-link" href="#" class="btn-download" download>
+                <div class="btn-bg-glow"></div>
+                <div class="btn-content-wrapper">
+                  <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  <span class="btn-text">Download APK</span>
+                </div>
+              </a>
+              <button onclick="location.reload()" class="btn-back" style="cursor: pointer;">Go Back / New Build</button>
             </div>
+          </div>
 
-            <!-- PACKAGE & MAX SIZE -->
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Package Name</label>
-                <input type="text" id="bPkg" value="com.sifat.app" required class="w-full h-10 px-3 text-xs rounded-xl bg-slate-900/90 border border-slate-700 text-white outline-none focus:border-cyan-400" />
-              </div>
-              <div>
-                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Target Size Mode</label>
-                <select id="bSizeLimit" class="w-full h-10 px-3 text-xs rounded-xl bg-slate-900/90 border border-slate-700 text-cyan-300 outline-none font-bold">
-                  <option value="5">Max 5 MB (Ultra Lite)</option>
-                  <option value="10" selected>Max 10 MB (Standard)</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- APP ICON -->
-            <div>
-              <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">App Icon (PNG / JPG)</label>
-              <input type="file" id="bIcon" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:bg-cyan-500/20 file:text-cyan-300 hover:file:bg-cyan-500/30 cursor-pointer" />
-            </div>
-
-            <!-- HTML FILE INPUT -->
-            <div class="p-4 rounded-2xl bg-cyan-950/30 border border-cyan-400/30">
-              <label class="block text-[11px] font-bold text-cyan-300 uppercase mb-1">SELECT HTML FILE (SOURCE CODE)</label>
-              <input type="file" id="bHtmlFile" accept=".html,.htm" required onchange="handlePreviewHTML(this)" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-cyan-400 file:text-slate-950 hover:file:bg-cyan-300 cursor-pointer" />
-            </div>
-
-            <!-- LIVE PREVIEW -->
-            <div class="border border-slate-800 rounded-2xl p-3 bg-slate-950/60">
-              <div class="flex items-center justify-between text-xs mb-2">
-                <span class="text-slate-300 font-bold">Live Screen Preview</span>
-                <span class="text-[10px] text-cyan-400 font-mono">Mobile View</span>
-              </div>
-              <div class="device-screen">
-                <iframe id="buildLiveIframe" class="w-full h-full bg-white" sandbox="allow-scripts allow-forms allow-modals"></iframe>
-              </div>
-            </div>
-
-            <button type="submit" id="bSubmitBtn" class="w-full py-4 bg-gradient-to-r from-cyan-400 to-emerald-400 hover:from-cyan-300 hover:to-emerald-300 text-slate-950 font-black text-xs rounded-2xl shadow-xl shadow-cyan-500/20 flex items-center justify-center gap-2 transition duration-200">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-              <span>Build & Download Real Installable APK</span>
-            </button>
-
-          </form>
         </div>
       </div>
     </section>
 
-    <!-- 5. USER UPLOAD VIEW -->
+    <!-- 5. NEWS VIEW -->
+    <section id="view-news" class="page-view">
+      <h2 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">SIFAT YT News & Guides</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <article class="border border-slate-100 rounded-2xl overflow-hidden shadow-sm">
+          <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500" class="w-full h-36 object-cover">
+          <div class="p-4">
+            <span class="text-[10px] font-bold bg-primary-light text-primary px-2 py-0.5 rounded-full">Guide</span>
+            <h3 class="font-bold text-sm text-slate-900 mt-2">100% Genuine Direct High-Speed APK Downloads</h3>
+            <p class="text-xs text-slate-500 mt-1">Download and install valid uncorrupted Android APK files safely.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 6. UPLOAD VIEW -->
     <section id="view-upload" class="page-view">
       <div class="max-w-md mx-auto bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
-        
         <div id="authContainer">
-          <div class="flex items-center gap-2 mb-2">
-            <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black">U</div>
-            <h3 class="font-bold text-base text-slate-900">User Login</h3>
-          </div>
-          <p class="text-xs text-slate-500 mb-4">APK আপলোড বা সাবমিট করতে লগইন করুন।</p>
+          <h3 class="font-bold text-lg text-slate-900 mb-1">User Account</h3>
+          <p class="text-xs text-slate-500 mb-4">Login or create an account to publish APK.</p>
           <input id="loginEmail" type="email" placeholder="Email Address" class="w-full h-11 px-4 mb-2 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none" />
           <input id="loginPass" type="password" placeholder="Password (Min 6 chars)" class="w-full h-11 px-4 mb-4 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none" />
-          <button onclick="loginUser()" class="w-full py-3 bg-emerald-600 text-white rounded-xl font-bold text-xs mb-2 shadow-md">Sign In</button>
+          <button onclick="loginUser()" class="w-full py-3 bg-primary text-white rounded-xl font-bold text-xs mb-2 shadow-md">Sign In</button>
           <button onclick="registerUser()" class="w-full py-2.5 bg-slate-100 text-slate-700 rounded-xl font-bold text-xs">Create Account</button>
         </div>
 
         <div id="uploadContainer" class="hidden">
           <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-2">
-            <div>
-              <b class="text-sm text-slate-900 block">Submit Genuine APK</b>
-              <small class="text-[10px] text-emerald-600 font-semibold">এডমিন অ্যাপ্রুভ করলে লাইভ স্টোরে চলে যাবে</small>
-            </div>
+            <b class="text-sm text-slate-900">Submit Real APK</b>
             <button onclick="logoutUser()" class="text-xs text-red-500 font-bold">Sign Out</button>
           </div>
-
           <form id="userUploadForm" class="space-y-3">
             <input id="uName" required placeholder="App Name" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none" />
             <input id="uPkg" required placeholder="Package Name (com.example.app)" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none" />
-            
-            <div class="grid grid-cols-2 gap-2">
-              <select id="uCat" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none font-semibold">
-                <option value="apps">Apps</option>
-                <option value="games">Games</option>
-              </select>
-              <select id="uSizeLimit" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none font-semibold">
-                <option value="5">Limit: 5 MB</option>
-                <option value="10" selected>Limit: 10 MB</option>
-              </select>
-            </div>
-
+            <select id="uCat" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none">
+              <option value="apps">Apps</option>
+              <option value="games">Games</option>
+            </select>
             <div>
               <label class="text-[10px] font-bold text-slate-500 block mb-1">ICON IMAGE</label>
               <input type="file" id="uIcon" accept="image/*" required class="text-xs" />
             </div>
-
             <div class="p-3 bg-emerald-50 rounded-2xl border border-emerald-200">
-              <label class="text-[10px] font-bold text-emerald-800 block mb-1">GENUINE APK FILE (MAX 10MB)</label>
+              <label class="text-[10px] font-bold text-emerald-800 block mb-1">SELECT GENUINE APK FILE</label>
               <input type="file" id="uFile" accept=".apk" required class="text-xs" />
             </div>
-
-            <button type="submit" id="uSubmitBtn" class="w-full py-3 bg-emerald-600 text-white font-bold rounded-xl text-xs shadow-md">Submit for Review</button>
+            <button type="submit" id="uSubmitBtn" class="w-full py-3 bg-primary text-white font-bold rounded-xl text-xs shadow-md">Upload & Submit</button>
           </form>
         </div>
-
       </div>
     </section>
 
   </main>
 
-  <!-- ==================== APP DETAIL & REAL DOWNLOAD MODAL ==================== -->
-  <div id="appModal" class="fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
+  <!-- ==================== APP DETAIL & FAST DOWNLOAD MODAL ==================== -->
+  <div id="appModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
-      <button onclick="closeModal('appModal')" class="absolute right-4 top-4 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 hover:bg-slate-200">&times;</button>
+      <button onclick="closeModal('appModal')" class="absolute right-4 top-4 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500">&times;</button>
       
       <div class="flex gap-4 items-center mb-4">
-        <img id="mIcon" class="w-16 h-16 rounded-2xl object-cover shadow-sm border border-slate-100 bg-slate-50" src="" alt="Icon" />
+        <img id="mIcon" class="w-16 h-16 rounded-2xl object-cover shadow-sm border border-slate-100" src="" alt="Icon" />
         <div class="min-w-0 flex-1">
           <h3 id="mName" class="font-bold text-base text-slate-900 truncate">App Name</h3>
-          <p id="mPkg" class="text-xs text-emerald-600 font-semibold truncate">com.app.package</p>
-          <span class="inline-flex items-center text-emerald-700 text-[10px] font-extrabold mt-1 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+          <p id="mPkg" class="text-xs text-primary font-semibold truncate">com.app.package</p>
+          <span class="inline-flex items-center text-emerald-600 text-[10px] font-bold mt-1 bg-emerald-50 px-2 py-0.5 rounded-md">
             ✓ Genuine Verified APK
           </span>
         </div>
       </div>
 
       <div class="grid grid-cols-3 gap-2 py-3 border-y border-slate-100 text-center mb-4">
-        <div><small class="text-slate-400 text-[10px] font-bold block">RATING</small><b class="text-amber-500 text-sm">4.9 ★</b></div>
+        <div><small class="text-slate-400 text-[10px] font-bold block">RATING</small><b class="text-slate-800 text-sm">4.9 ★</b></div>
         <div><small class="text-slate-400 text-[10px] font-bold block">SIZE</small><b id="mSize" class="text-slate-800 text-sm">Verified</b></div>
         <div><small class="text-slate-400 text-[10px] font-bold block">STATUS</small><b class="text-emerald-600 text-sm font-bold">ACTIVE</b></div>
       </div>
 
-      <button id="mDownloadBtn" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm rounded-2xl shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition">
+      <button id="mDownloadBtn" class="w-full py-3.5 bg-primary hover:bg-primary-dark active:scale-[0.98] text-white font-bold text-sm rounded-2xl shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition duration-200">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-        <span>Download Genuine APK</span>
+        <span id="mBtnLabel">Download APK</span>
       </button>
-
     </div>
   </div>
 
-  <!-- ==================== SIFAT YT ADMIN CONSOLE ==================== -->
-  <div id="adminModal" class="fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center p-4 hidden backdrop-blur-md">
-    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+  <!-- ==================== SECRET ADMIN MODAL ==================== -->
+  <div id="adminModal" class="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4 hidden backdrop-blur-md">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
       <button onclick="closeModal('adminModal')" class="absolute right-4 top-4 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500">&times;</button>
       
-      <div class="flex items-center gap-2 mb-4 pb-3 border-b border-slate-100">
+      <div class="flex items-center gap-2 mb-4">
         <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-        <h3 class="font-black text-base text-slate-900">SIFAT YT Admin Super Console</h3>
+        <h3 class="font-bold text-base text-slate-900">Admin Console (SIFAT YT)</h3>
       </div>
 
-      <!-- TABS -->
-      <div class="flex gap-2 mb-4 border-b border-slate-100 pb-2">
-        <button id="admBtnUpload" onclick="switchAdminTab('publish')" class="px-3.5 py-1.5 rounded-xl font-bold text-xs bg-emerald-600 text-white">Direct Publish</button>
-        <button id="admBtnPending" onclick="switchAdminTab('pending')" class="px-3.5 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700">Pending Approvals (<span id="adminPendingBadge">0</span>)</button>
-        <button id="admBtnLive" onclick="switchAdminTab('live')" class="px-3.5 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700">Live Apps</button>
-      </div>
+      <form id="adminPublishForm" class="space-y-3">
+        <input id="adName" required placeholder="Application Name" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none" />
+        <input id="adPkg" required placeholder="Package Name" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none" />
+        
+        <select id="adCat" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none">
+          <option value="games">Games</option>
+          <option value="apps">Apps</option>
+        </select>
 
-      <!-- TAB 1: DIRECT PUBLISH (NO FAIL) -->
-      <div id="adminSecPublish">
-        <form id="adminPublishForm" class="space-y-3">
-          <div class="grid grid-cols-2 gap-3">
-            <input id="adName" required placeholder="App Name" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none" />
-            <input id="adPkg" required placeholder="Package Name" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none" />
-          </div>
+        <div>
+          <label class="text-[10px] font-bold text-slate-500 block mb-1">ICON IMAGE</label>
+          <input type="file" id="adIcon" accept="image/*" required class="text-xs" />
+        </div>
 
-          <div class="grid grid-cols-2 gap-3">
-            <select id="adCat" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none font-bold">
-              <option value="games">Games</option>
-              <option value="apps">Apps</option>
-            </select>
-            <select id="adSizeLimit" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs outline-none font-bold">
-              <option value="5">Limit: 5 MB</option>
-              <option value="10" selected>Limit: 10 MB</option>
-            </select>
-          </div>
+        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200">
+          <label class="text-[10px] font-bold text-slate-700 block mb-1">GENUINE APK FILE OR DIRECT URL</label>
+          <input type="file" id="adFile" accept=".apk" class="text-xs mb-2" />
+          <input id="adUrl" type="url" placeholder="অথবা সরাসরি Direct APK Download URL দিন" class="w-full h-9 px-3 rounded-xl bg-white border border-slate-200 text-xs outline-none" />
+        </div>
 
-          <div>
-            <label class="text-[10px] font-bold text-slate-500 block mb-1">ICON IMAGE</label>
-            <input type="file" id="adIcon" accept="image/*" required class="text-xs" />
-          </div>
-
-          <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200">
-            <label class="text-[10px] font-bold text-slate-700 block mb-1">GENUINE APK FILE OR DIRECT URL</label>
-            <input type="file" id="adFile" accept=".apk" class="text-xs mb-2" />
-            <input id="adUrl" type="url" placeholder="অথবা সরাসরি APK Download URL দিন (MediaFire/Drive/Direct Link)" class="w-full h-9 px-3 rounded-xl bg-white border border-slate-200 text-xs outline-none" />
-          </div>
-
-          <button type="submit" id="adSubmitBtn" class="w-full py-3 bg-emerald-600 text-white font-bold rounded-xl text-xs shadow-md">Publish Directly to Live Store</button>
-        </form>
-      </div>
-
-      <!-- TAB 2: PENDING APPROVALS -->
-      <div id="adminSecPending" class="hidden space-y-2">
-        <div id="adminPendingList" class="space-y-2"></div>
-      </div>
-
-      <!-- TAB 3: LIVE STORE MANAGER -->
-      <div id="adminSecLive" class="hidden space-y-2">
-        <div id="adminLiveList" class="space-y-2"></div>
-      </div>
-
+        <button type="submit" id="adSubmitBtn" class="w-full py-3.5 bg-primary text-white font-bold rounded-xl text-xs shadow-md">Publish to SIFAT YT Live</button>
+      </form>
     </div>
   </div>
 
-  <!-- LOADING OVERLAY -->
-  <div class="fixed inset-0 bg-slate-950/85 z-[100] flex flex-col items-center justify-center p-4 hidden backdrop-blur-md" id="globalLoadingOverlay">
+  <!-- ==================== FILE 2 CYBER LOADING OVERLAY ==================== -->
+  <div class="loading-overlay" id="loadingOverlay">
     <div id="wifi-loader">
-      <svg class="circle-outer" viewBox="0 0 86 86">
-        <circle class="back" cx="43" cy="43" r="40"></circle>
-        <circle class="front" cx="43" cy="43" r="40"></circle>
-      </svg>
+      <svg class="circle-outer" viewBox="0 0 86 86"><circle class="back" cx="43" cy="43" r="40"></circle><circle class="front" cx="43" cy="43" r="40"></circle></svg>
+      <svg class="circle-middle" viewBox="0 0 60 60"><circle class="back" cx="30" cy="30" r="27"></circle><circle class="front" cx="30" cy="30" r="27"></circle></svg>
+      <svg class="circle-inner" viewBox="0 0 34 34"><circle class="back" cx="17" cy="17" r="14"></circle><circle class="front" cx="17" cy="17" r="14"></circle></svg>
     </div>
-    <div class="text-white text-base font-extrabold tracking-wide" id="globalLoadingTitle">Building Real APK</div>
-    <div class="text-slate-400 text-xs mt-1" id="globalLoadingDesc">Compiling Dalvik bytecode & signing package...</div>
+    <div class="loading-text" id="overlayTitle">Processing</div>
+    <div class="loading-subtext" id="overlayDesc">Please wait while we set up your environment.</div>
   </div>
 
-  <!-- FIXED BOTTOM NAVIGATION -->
-  <nav class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-40 flex items-center justify-around py-2 shadow-lg">
-    <button onclick="switchPage('home')" id="nav-home" class="nav-btn flex flex-col items-center gap-0.5 text-emerald-600 font-black text-[11px] flex-1 py-1">
+  <!-- ==================== FILE 2 CUSTOM MODAL ==================== -->
+  <div class="modal-overlay" id="customModal">
+    <div class="custom-modal">
+      <svg class="modal-icon warning" id="modalIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+      <div class="modal-title" id="modalTitle">Error</div>
+      <div class="modal-text" id="modalTextEn">Something went wrong.</div>
+      <div class="modal-text bn" id="modalTextBn">কিছু একটা ভুল হয়েছে।</div>
+      
+      <div class="modal-buttons">
+        <button class="btn-modal-secondary" id="modalCloseBtn">Cancel</button>
+        <a href="#" target="_blank" class="btn-modal-primary" id="modalActionBtn">OK</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== FIXED BOTTOM NAVIGATION ==================== -->
+  <nav class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-50 flex items-center justify-around py-2 shadow-lg">
+    <button onclick="switchPage('home')" id="nav-home" class="nav-btn flex flex-col items-center gap-0.5 text-primary font-bold text-[11px] flex-1 py-1">
       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home
     </button>
-    <button onclick="switchPage('apps')" id="nav-apps" class="nav-btn flex flex-col items-center gap-0.5 text-slate-500 font-bold text-[11px] flex-1 py-1">
+    <button onclick="switchPage('apps')" id="nav-apps" class="nav-btn flex flex-col items-center gap-0.5 text-slate-500 font-medium text-[11px] flex-1 py-1">
       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>Apps
     </button>
-    <button onclick="switchPage('games')" id="nav-games" class="nav-btn flex flex-col items-center gap-0.5 text-slate-500 font-bold text-[11px] flex-1 py-1">
+    <button onclick="switchPage('games')" id="nav-games" class="nav-btn flex flex-col items-center gap-0.5 text-slate-500 font-medium text-[11px] flex-1 py-1">
       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>Games
     </button>
-    <button onclick="switchPage('build')" id="nav-build" class="nav-btn flex flex-col items-center gap-0.5 text-cyan-600 font-black text-[11px] flex-1 py-1">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>Auto APK
+    <button onclick="switchPage('build')" id="nav-build" class="nav-btn flex flex-col items-center gap-0.5 text-cyan-600 font-bold text-[11px] flex-1 py-1">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>Build
     </button>
-    <button onclick="switchPage('upload')" id="nav-upload" class="nav-btn flex flex-col items-center gap-0.5 text-slate-500 font-bold text-[11px] flex-1 py-1">
+    <button onclick="switchPage('news')" id="nav-news" class="nav-btn flex flex-col items-center gap-0.5 text-slate-500 font-medium text-[11px] flex-1 py-1">
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 14H4v-4h11v4zm0-5H4V9h11v4zm5 5h-4V9h4v9z"/></svg>News
+    </button>
+    <button onclick="switchPage('upload')" id="nav-upload" class="nav-btn flex flex-col items-center gap-0.5 text-slate-500 font-medium text-[11px] flex-1 py-1">
       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Upload
     </button>
   </nav>
 
   <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs px-5 py-2.5 rounded-full shadow-2xl opacity-0 pointer-events-none transition-all duration-300 z-50"></div>
 
-  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <!-- ==================== SCRIPT 1: STORE LOGIC ==================== -->
   <script>
+    const _ADMIN_HASH = btoa('py.py.io');
+
     const firebaseConfig = {
       apiKey: 'AIzaSyBTNUdaOHUrdFluaJAt2RQi6kZ5SjhVS8s',
       authDomain: 'sifatby-38886.firebaseapp.com',
@@ -494,21 +706,9 @@
       appId: '1:571558461802:web:34dc103c19aa3ed4b5a513'
     };
 
-    let auth = null, db = null;
-    try {
-      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-      auth = firebase.auth();
-      db = firebase.database();
-    } catch(err){ console.warn("Firebase Init", err); }
-
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth(), db = firebase.database();
     let currentUser = null, appsCache = {}, searchQuery = '';
-
-    function toast(m){
-      const t = document.getElementById('toast');
-      t.textContent = m;
-      t.classList.remove('opacity-0');
-      setTimeout(() => t.classList.add('opacity-0'), 3000);
-    }
 
     function switchPage(pageId){
       document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
@@ -516,145 +716,50 @@
       if(target) target.classList.add('active');
 
       document.querySelectorAll('.nav-btn').forEach(b => {
-        b.classList.remove('text-emerald-600', 'text-cyan-600', 'font-black');
-        b.classList.add('text-slate-500', 'font-bold');
+        b.classList.remove('text-primary', 'text-cyan-600', 'font-bold');
+        b.classList.add('text-slate-500', 'font-medium');
       });
       const activeNav = document.getElementById('nav-' + pageId);
       if(activeNav){
-        activeNav.classList.add(pageId === 'build' ? 'text-cyan-600' : 'text-emerald-600', 'font-black');
-        activeNav.classList.remove('text-slate-500', 'font-bold');
+        activeNav.classList.add(pageId === 'build' ? 'text-cyan-600' : 'text-primary', 'font-bold');
+        activeNav.classList.remove('text-slate-500', 'font-medium');
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toast(m){
+      const t = document.getElementById('toast');
+      t.textContent = m;
+      t.classList.remove('opacity-0');
+      setTimeout(() => t.classList.add('opacity-0'), 2500);
     }
 
     function openModal(id){ document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
 
-    function showLoader(t, d){
-      document.getElementById('globalLoadingTitle').textContent = t || 'Building Real APK';
-      document.getElementById('globalLoadingDesc').textContent = d || 'Compiling & Signing...';
-      document.getElementById('globalLoadingOverlay').classList.remove('hidden');
-    }
-    function hideLoader(){
-      document.getElementById('globalLoadingOverlay').classList.add('hidden');
-    }
-
-    // --- SECRET ADMIN TAP (5 Taps) ---
-    let taps = 0, tapTimer = null;
-    function handleAdminTap(){
-      taps++;
+    // SECRET ADMIN
+    let logoTaps = 0, tapTimer = null;
+    function handleSecretAdminTap(){
+      logoTaps++;
       clearTimeout(tapTimer);
-      tapTimer = setTimeout(() => { taps = 0; }, 1500);
-      if(taps >= 5){
-        taps = 0;
-        const p = prompt('SIFAT YT Admin Secret Password:');
-        if(p && (p.toLowerCase() === 'sifat' || p.toLowerCase() === 'admin123' || btoa(p) === btoa('py.py.io'))){
+      tapTimer = setTimeout(() => { logoTaps = 0; }, 1500);
+
+      if(logoTaps >= 5){
+        logoTaps = 0;
+        const pass = prompt('Enter Admin Password:');
+        if(pass && (btoa(pass) === _ADMIN_HASH || pass.toLowerCase() === 'sifat' || pass.toLowerCase() === 'admin123')){
           openModal('adminModal');
-          renderAdmin();
-          toast('Admin Console Unlocked! ⚡');
+          toast('Admin Console Unlocked');
         } else {
           toast('ভুল পাসওয়ার্ড!');
         }
       }
     }
 
-    function switchAdminTab(t){
-      document.getElementById('adminSecPublish').classList.toggle('hidden', t !== 'publish');
-      document.getElementById('adminSecPending').classList.toggle('hidden', t !== 'pending');
-      document.getElementById('adminSecLive').classList.toggle('hidden', t !== 'live');
-
-      document.getElementById('admBtnUpload').className = t === 'publish' ? 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-emerald-600 text-white' : 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700';
-      document.getElementById('admBtnPending').className = t === 'pending' ? 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-emerald-600 text-white' : 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700';
-      document.getElementById('admBtnLive').className = t === 'live' ? 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-emerald-600 text-white' : 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700';
-      renderAdmin();
+    function handleSearch(q){
+      searchQuery = q.toLowerCase().trim();
+      renderStore();
     }
-
-    // --- LIVE PREVIEW ---
-    function handlePreviewHTML(input){
-      const frame = document.getElementById('buildLiveIframe');
-      if(input.files && input.files[0]){
-        const r = new FileReader();
-        r.onload = e => { frame.srcdoc = e.target.result; };
-        r.readAsText(input.files[0]);
-      }
-    }
-
-    // --- REAL GRADLE / BUILD SERVER COMPILER ENGINE ---
-    document.getElementById('autoBuilderForm').addEventListener('submit', async function(e){
-      e.preventDefault();
-      const name = document.getElementById('bName').value.trim();
-      const pkg = document.getElementById('bPkg').value.trim();
-      const serverUrl = document.getElementById('bServerUrl').value.trim().replace(/\/+$/, "");
-      const htmlF = document.getElementById('bHtmlFile').files[0];
-      const iconF = document.getElementById('bIcon').files[0];
-
-      if(!htmlF){ toast('HTML ফাইল নির্বাচন করুন!'); return; }
-
-      showLoader('Connecting to Android Compiler', 'Uploading HTML to Gradle Pipeline...');
-
-      const formData = new FormData();
-      formData.append('appName', name);
-      formData.append('packageName', pkg);
-      formData.append('htmlFiles', htmlF);
-      if(iconF) formData.append('iconFile', iconF);
-
-      const apiKey = ['F','F','X','_','S','E','C','R','E','T','_','A','P','I','_','K','E','Y','_','2','0','2','6'].join('');
-
-      try {
-        // 1. Initiate Build on Server
-        const resp = await fetch(`${serverUrl}/api/build`, {
-          method: 'POST',
-          headers: { 'x-api-key': apiKey },
-          body: formData
-        });
-
-        if(!resp.ok){
-          throw new Error('Build Server Error or Offline (' + resp.status + ')');
-        }
-
-        const data = await resp.json();
-        const buildId = data.buildId || data.id;
-
-        // 2. Poll Status until Real APK is Signed
-        showLoader('Compiling Genuine APK', 'Running aapt2, d8, and apksigner on server...');
-
-        const pollTimer = setInterval(async () => {
-          try {
-            const statusResp = await fetch(`${serverUrl}/api/status/${buildId}`, {
-              headers: { 'x-api-key': apiKey }
-            });
-            const statusData = await statusResp.json();
-
-            if(statusData.status === 'done' || statusData.state === 'success'){
-              clearInterval(pollTimer);
-              hideLoader();
-              
-              const downloadUrl = `${serverUrl}/download/${buildId}?key=${apiKey}`;
-              
-              // Trigger Real APK Download
-              const link = document.createElement('a');
-              link.href = downloadUrl;
-              link.download = name.replace(/\s+/g, '_') + '.apk';
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-
-              toast('অভিনন্দন! আপনার আসল signed APK তৈরি হয়ে ডাউনলোড হয়েছে! 🎉');
-            } else if(statusData.status === 'failed'){
-              clearInterval(pollTimer);
-              hideLoader();
-              toast('Build Error: ' + (statusData.error || 'Server build failed'));
-            }
-          } catch(err){
-            // Ignore polling network blips
-          }
-        }, 2000);
-
-      } catch(err){
-        hideLoader();
-        toast('সার্ভার এরর: ' + err.message + ' — রিয়েল বিল্ড সার্ভার সক্রিয় আছে কিনা চেক করুন।');
-      }
-    });
 
     function fileToBase64(file){
       return new Promise((resolve, reject) => {
@@ -667,203 +772,24 @@
 
     function compressImageToBase64(file){
       return new Promise((resolve) => {
-        if(!file) return resolve('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150');
-        const r = new FileReader();
-        r.onload = e => {
+        if(!file) return resolve('');
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = e => {
           const img = new Image();
+          img.src = e.target.result;
           img.onload = () => {
             const canvas = document.createElement('canvas');
             let w = img.width, h = img.height;
-            if(w > 128){ h = Math.round((h * 128) / w); w = 128; }
+            const max = 120;
+            if(w > max){ h = Math.round((h * max) / w); w = max; }
             canvas.width = w; canvas.height = h;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, w, h);
             resolve(canvas.toDataURL('image/jpeg', 0.8));
           };
-          img.src = e.target.result;
         };
-        r.readAsDataURL(file);
       });
-    }
-
-    // --- USER SUBMISSION ---
-    document.getElementById('userUploadForm').addEventListener('submit', async function(e){
-      e.preventDefault();
-      const name = document.getElementById('uName').value.trim();
-      const pkg = document.getElementById('uPkg').value.trim();
-      const cat = document.getElementById('uCat').value;
-      const limit = parseInt(document.getElementById('uSizeLimit').value);
-      const iconF = document.getElementById('uIcon').files[0];
-      const rawF = document.getElementById('uFile').files[0];
-
-      if(!rawF){ toast('APK ফাইল নির্বাচন করুন!'); return; }
-      if(rawF.size > limit * 1024 * 1024){
-        toast(`ফাইল সাইজ সর্বোচ্চ ${limit}MB হতে পারবে!`);
-        return;
-      }
-
-      const btn = document.getElementById('uSubmitBtn');
-      btn.disabled = true; btn.textContent = 'Uploading Genuine APK...';
-
-      try {
-        const finalDataUrl = await fileToBase64(rawF);
-        const iconB64 = await compressImageToBase64(iconF);
-        const id = db ? db.ref('apps').push().key : 'local_' + Date.now();
-
-        const payload = {
-          name, packageName: pkg, category: cat,
-          fileSize: (rawF.size / (1024*1024)).toFixed(2) + ' MB',
-          iconURL: iconB64, apkData: finalDataUrl, status: 'pending',
-          submittedBy: currentUser ? currentUser.email : 'User',
-          createdAt: Date.now()
-        };
-
-        if(db) await db.ref('apps/' + id).set(payload);
-        else { appsCache[id] = payload; renderStore(); }
-
-        toast('আসল APK সফলভাবে রিভিউয়ের জন্য জমা হয়েছে!');
-        this.reset();
-      } catch(err){
-        toast('Upload Failed: ' + err.message);
-      } finally {
-        btn.disabled = false; btn.textContent = 'Submit for Review';
-      }
-    });
-
-    // --- ADMIN DIRECT PUBLISH ---
-    document.getElementById('adminPublishForm').addEventListener('submit', async function(e){
-      e.preventDefault();
-      const name = document.getElementById('adName').value.trim();
-      const pkg = document.getElementById('adPkg').value.trim();
-      const cat = document.getElementById('adCat').value;
-      const limit = parseInt(document.getElementById('adSizeLimit').value);
-      const iconF = document.getElementById('adIcon').files[0];
-      const rawF = document.getElementById('adFile').files[0];
-      const customUrl = document.getElementById('adUrl').value.trim();
-
-      if(!rawF && !customUrl){
-        toast('APK ফাইল বা ডাইরেক্ট URL দিন!');
-        return;
-      }
-
-      if(rawF && rawF.size > limit * 1024 * 1024){
-        toast(`ফাইল সাইজ ${limit}MB এর বেশি হতে পারবে না!`);
-        return;
-      }
-
-      const btn = document.getElementById('adSubmitBtn');
-      btn.disabled = true; btn.textContent = 'Publishing to Live Store...';
-
-      try {
-        let finalDownloadUrl = customUrl;
-        let sizeText = 'Verified';
-
-        if(rawF){
-          sizeText = (rawF.size / (1024*1024)).toFixed(2) + ' MB';
-          finalDownloadUrl = await fileToBase64(rawF);
-        }
-
-        const iconB64 = await compressImageToBase64(iconF);
-        const id = db ? db.ref('apps').push().key : 'live_' + Date.now();
-
-        const payload = {
-          name, packageName: pkg, category: cat,
-          fileSize: sizeText, iconURL: iconB64,
-          apkData: finalDownloadUrl, status: 'approved',
-          createdAt: Date.now()
-        };
-
-        if(db) await db.ref('apps/' + id).set(payload);
-        else { appsCache[id] = payload; renderStore(); }
-
-        toast('App সফলভাবে লাইভ স্টোরে পাবলিশ হয়েছে! 🚀');
-        this.reset();
-        closeModal('adminModal');
-      } catch(err){
-        toast('Publish Error: ' + err.message);
-      } finally {
-        btn.disabled = false; btn.textContent = 'Publish Directly to Live Store';
-      }
-    });
-
-    // --- ADMIN CONTROLS (APPROVE / DELETE) ---
-    function renderAdmin(){
-      const pBox = document.getElementById('adminPendingList');
-      const lBox = document.getElementById('adminLiveList');
-      const badge = document.getElementById('adminPendingBadge');
-
-      pBox.innerHTML = ''; lBox.innerHTML = '';
-      const list = Object.keys(appsCache).map(id => ({ id, ...appsCache[id] }));
-      const pending = list.filter(a => a.status === 'pending');
-      const approved = list.filter(a => a.status === 'approved');
-
-      badge.textContent = pending.length;
-
-      if(!pending.length){
-        pBox.innerHTML = '<div class="text-xs text-slate-400 text-center py-4">কোনো পেন্ডিং সাবমিশন নেই! 🎉</div>';
-      } else {
-        pending.forEach(app => {
-          const div = document.createElement('div');
-          div.className = 'p-3 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between gap-3';
-          div.innerHTML = `
-            <div class="flex items-center gap-2.5 min-w-0">
-              <img src="${app.iconURL || ''}" class="w-10 h-10 rounded-xl object-cover border">
-              <div class="min-w-0">
-                <b class="text-xs text-slate-900 block truncate">${app.name}</b>
-                <small class="text-[10px] text-slate-500 block truncate">${app.packageName} • ${app.fileSize || 'N/A'}</small>
-              </div>
-            </div>
-            <div class="flex items-center gap-1.5 shrink-0">
-              <button onclick="adminApprove('${app.id}')" class="px-3 py-1 bg-emerald-600 text-white text-[10px] font-bold rounded-lg shadow-sm">Approve</button>
-              <button onclick="adminDelete('${app.id}')" class="px-2 py-1 bg-red-100 text-red-600 text-[10px] font-bold rounded-lg">Reject</button>
-            </div>
-          `;
-          pBox.appendChild(div);
-        });
-      }
-
-      if(!approved.length){
-        lBox.innerHTML = '<div class="text-xs text-slate-400 text-center py-4">লাইভ স্টোরে কোনো অ্যাপ নেই।</div>';
-      } else {
-        approved.forEach(app => {
-          const div = document.createElement('div');
-          div.className = 'p-3 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between gap-3';
-          div.innerHTML = `
-            <div class="flex items-center gap-2.5 min-w-0">
-              <img src="${app.iconURL || ''}" class="w-10 h-10 rounded-xl object-cover border">
-              <div class="min-w-0">
-                <b class="text-xs text-slate-900 block truncate">${app.name}</b>
-                <small class="text-[10px] text-emerald-600 font-bold block">${(app.category||'apps').toUpperCase()} • ${app.fileSize || 'Verified'}</small>
-              </div>
-            </div>
-            <button onclick="adminDelete('${app.id}')" class="px-3 py-1 bg-red-100 text-red-600 text-[10px] font-bold rounded-lg shrink-0">Delete</button>
-          `;
-          lBox.appendChild(div);
-        });
-      }
-    }
-
-    async function adminApprove(id){
-      if(db) await db.ref('apps/' + id + '/status').set('approved');
-      else if(appsCache[id]) appsCache[id].status = 'approved';
-      toast('App সফলভাবে লাইভ স্টোরে অ্যাপ্রুভ হয়েছে! 🚀');
-      renderAdmin();
-      renderStore();
-    }
-
-    async function adminDelete(id){
-      if(!confirm('আপনি কি নিশ্চিত এটি ডিলিট করতে চান?')) return;
-      if(db) await db.ref('apps/' + id).remove();
-      else delete appsCache[id];
-      toast('ডিলিট সম্পন্ন হয়েছে।');
-      renderAdmin();
-      renderStore();
-    }
-
-    // --- STORE RENDER & DOWNLOAD ---
-    function handleSearch(q){
-      searchQuery = q.toLowerCase().trim();
-      renderStore();
     }
 
     function renderStore(){
@@ -886,17 +812,17 @@
       list.forEach((app, idx) => {
         if(idx < 5){
           const fCard = document.createElement('div');
-          fCard.className = 'snap-start shrink-0 w-[80%] sm:w-[50%] md:w-[35%] rounded-2xl overflow-hidden cursor-pointer shadow-sm border border-slate-200 bg-slate-900 relative';
+          fCard.className = 'snap-start shrink-0 w-[80%] sm:w-[50%] md:w-[35%] rounded-2xl overflow-hidden cursor-pointer shadow-sm border border-slate-100 bg-slate-50 relative group';
           fCard.onclick = () => openAppDetails(app.id);
           fCard.innerHTML = `
-            <div class="h-28 bg-slate-950 flex items-center justify-center overflow-hidden">
-              <img src="${app.iconURL || ''}" class="w-full h-full object-cover blur-sm opacity-40">
+            <div class="h-28 bg-slate-800 flex items-center justify-center overflow-hidden">
+              <img src="${app.iconURL || ''}" class="w-full h-full object-cover blur-sm opacity-50 group-hover:scale-105 transition duration-300">
             </div>
-            <div class="p-3.5 flex items-center gap-3 bg-white absolute bottom-0 inset-x-0 border-t border-slate-100">
-              <img src="${app.iconURL || ''}" class="w-10 h-10 rounded-xl object-cover border border-slate-100">
+            <div class="p-3 flex items-center gap-3 bg-white/95 backdrop-blur-md absolute bottom-0 inset-x-0">
+              <img src="${app.iconURL || ''}" class="w-10 h-10 rounded-xl object-cover shadow-sm">
               <div class="min-w-0 flex-1">
                 <h3 class="font-bold text-slate-900 text-xs truncate">${app.name}</h3>
-                <p class="text-[10px] font-bold text-emerald-600">${(app.category||'APPS').toUpperCase()}</p>
+                <p class="text-[11px] font-semibold text-primary">${(app.category||'APPS').toUpperCase()}</p>
               </div>
             </div>
           `;
@@ -911,14 +837,14 @@
           gCard.innerHTML = `
             <div class="app-icon-card__thumb"><img src="${app.iconURL || ''}" alt="${app.name}"></div>
             <h3 class="app-icon-card__name">${app.name}</h3>
-            <span class="text-[11px] font-bold text-amber-500">4.9 ★</span>
+            <span class="app-icon-card__rating">4.9 ★</span>
           `;
           if(gCount <= 6) hGames.appendChild(gCard);
           allGames.appendChild(gCard.cloneNode(true));
         } else {
           aCount++;
           const aCard = document.createElement('div');
-          aCard.className = 'flex items-center gap-3 p-3 rounded-2xl shadow-sm hover:shadow-md cursor-pointer border border-slate-200 bg-white transition';
+          aCard.className = 'flex items-center gap-3 p-3 rounded-2xl shadow-sm hover:shadow-md cursor-pointer border border-slate-100 bg-white transition';
           aCard.onclick = () => openAppDetails(app.id);
           aCard.innerHTML = `
             <div class="w-13 h-13 rounded-2xl overflow-hidden shrink-0 bg-slate-50 border border-slate-100">
@@ -927,7 +853,7 @@
             <div class="flex-1 min-w-0">
               <h3 class="text-xs font-bold text-slate-900 truncate">${app.name}</h3>
               <div class="text-[11px] text-slate-400 my-0.5">4.9 ★ • ${app.fileSize || 'Verified'}</div>
-              <div class="text-[10px] font-bold text-emerald-600">Free Direct APK</div>
+              <div class="text-[10px] font-bold text-primary">Free Download</div>
             </div>
           `;
           if(aCount <= 6) hApps.appendChild(aCard);
@@ -937,10 +863,6 @@
 
       document.getElementById('allAppsCount').textContent = aCount + ' Apps';
       document.getElementById('allGamesCount').textContent = gCount + ' Games';
-
-      if(!list.length){
-        featRow.innerHTML = '<div class="text-slate-400 text-xs py-4 px-2">কোনো অনুমোদিত অ্যাপ্লিকেশন পাওয়া যায়নি।</div>';
-      }
     }
 
     function openAppDetails(id){
@@ -948,76 +870,527 @@
       if(!app) return;
 
       document.getElementById('mIcon').src = app.iconURL || '';
-      document.getElementById('mName').textContent = app.name || 'SIFAT YT App';
-      document.getElementById('mPkg').textContent = app.packageName || 'com.sifat.app';
+      document.getElementById('mName').textContent = app.name || 'App';
+      document.getElementById('mPkg').textContent = app.packageName || 'com.app';
       document.getElementById('mSize').textContent = app.fileSize || 'Verified';
 
       const btn = document.getElementById('mDownloadBtn');
-      btn.onclick = () => triggerRealDownload(app);
+      btn.onclick = () => {
+        const downloadUrl = app.apkUrl || app.apkData;
+        if(!downloadUrl){ toast("ডাউনলোড লিংক পাওয়া যায়নি"); return; }
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = (app.name || 'app').replace(/\s+/g, '_') + '.apk';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        closeModal('appModal');
+      };
       openModal('appModal');
     }
 
-    function triggerRealDownload(app){
-      const url = app.apkData || app.apkUrl;
-      if(!url){ toast("ডাউনলোড লিংক পাওয়া যায়নি!"); return; }
+    // USER UPLOAD
+    document.getElementById('userUploadForm').addEventListener('submit', async function(e){
+      e.preventDefault();
+      const name = document.getElementById('uName').value.trim();
+      const pkg = document.getElementById('uPkg').value.trim();
+      const cat = document.getElementById('uCat').value;
+      const iconF = document.getElementById('uIcon').files[0];
+      const rawFile = document.getElementById('uFile').files[0];
 
-      toast(app.name + " আসল APK ডাউনলোড শুরু হয়েছে...");
+      const btn = document.getElementById('uSubmitBtn');
+      btn.disabled = true; btn.textContent = 'Uploading Genuine APK...';
 
-      const safeName = (app.name || 'app').replace(/\s+/g, '_') + '.apk';
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = safeName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      try {
+        const iconB64 = await compressImageToBase64(iconF);
+        const fileB64 = await fileToBase64(rawFile);
+        const id = db.ref('apps').push().key;
 
-      closeModal('appModal');
-    }
+        await db.ref('apps/' + id).set({
+          name, packageName: pkg, category: cat,
+          fileSize: (rawFile.size / (1024*1024)).toFixed(2) + ' MB',
+          iconURL: iconB64, apkData: fileB64, status: 'approved',
+          createdAt: firebase.database.ServerValue.TIMESTAMP
+        });
 
-    // --- AUTHENTICATION ---
+        toast('অ্যাপ সফলভাবে লাইভ স্টোরে যুক্ত হয়েছে!');
+        this.reset();
+      } catch(err){
+        toast('Upload Error: ' + err.message);
+      } finally {
+        btn.disabled = false; btn.textContent = 'Upload & Submit';
+      }
+    });
+
+    // ADMIN DIRECT PUBLISH
+    document.getElementById('adminPublishForm').addEventListener('submit', async function(e){
+      e.preventDefault();
+      const name = document.getElementById('adName').value.trim();
+      const pkg = document.getElementById('adPkg').value.trim();
+      const cat = document.getElementById('adCat').value;
+      const iconF = document.getElementById('adIcon').files[0];
+      const rawFile = document.getElementById('adFile').files[0];
+      const customUrl = document.getElementById('adUrl').value.trim();
+
+      const btn = document.getElementById('adSubmitBtn');
+      btn.disabled = true;
+
+      try {
+        const iconB64 = await compressImageToBase64(iconF);
+        let finalDownloadUrl = customUrl;
+        let size = 'Verified';
+
+        if(rawFile){
+          size = (rawFile.size / (1024*1024)).toFixed(2) + ' MB';
+          finalDownloadUrl = await fileToBase64(rawFile);
+        }
+
+        const id = db.ref('apps').push().key;
+        await db.ref('apps/' + id).set({
+          name, packageName: pkg, category: cat,
+          fileSize: size, iconURL: iconB64, apkData: finalDownloadUrl,
+          status: 'approved', createdAt: firebase.database.ServerValue.TIMESTAMP
+        });
+
+        toast('App সফলভাবে লাইভ পাবলিশ হয়েছে!');
+        this.reset();
+        closeModal('adminModal');
+      } catch(err){
+        toast('Upload Failed: ' + err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
     function loginUser(){
       const e = document.getElementById('loginEmail').value, p = document.getElementById('loginPass').value;
-      if(!auth){ setUserUI(e); toast('Login Successful (Demo)'); return; }
-      auth.signInWithEmailAndPassword(e,p).then(() => toast('লগইন সফল হয়েছে')).catch(x => toast(x.message));
+      auth.signInWithEmailAndPassword(e,p).then(() => toast('Login Successful')).catch(x => toast(x.message));
     }
     function registerUser(){
       const e = document.getElementById('loginEmail').value, p = document.getElementById('loginPass').value;
-      if(!auth){ setUserUI(e); toast('Account Created (Demo)'); return; }
-      auth.createUserWithEmailAndPassword(e,p).then(() => toast('অ্যাকাউন্ট তৈরি হয়েছে')).catch(x => toast(x.message));
+      auth.createUserWithEmailAndPassword(e,p).then(() => toast('Account Created')).catch(x => toast(x.message));
     }
-    function logoutUser(){ 
-      if(auth) auth.signOut();
-      setUserUI(null);
-      toast('লগআউট সম্পন্ন'); 
-    }
+    function logoutUser(){ auth.signOut().then(() => toast('Logged Out')); }
 
-    function setUserUI(email){
-      if(email){
+    auth.onAuthStateChanged(u => {
+      currentUser = u;
+      if(u){
         document.getElementById('authContainer').classList.add('hidden');
         document.getElementById('uploadContainer').classList.remove('hidden');
-        document.getElementById('userAccountText').textContent = email.split('@')[0];
+        document.getElementById('userAccountText').textContent = (u.email||'User').split('@')[0];
       } else {
         document.getElementById('authContainer').classList.remove('hidden');
         document.getElementById('uploadContainer').classList.add('hidden');
         document.getElementById('userAccountText').textContent = 'Account';
       }
-    }
+    });
 
-    if(auth){
-      auth.onAuthStateChanged(u => {
-        currentUser = u;
-        setUserUI(u ? u.email : null);
-      });
-    }
+    db.ref('apps').on('value', s => {
+      appsCache = s.val() || {};
+      renderStore();
+    });
+  </script>
 
-    // --- DATABASE LISTENER ---
-    if(db){
-      db.ref('apps').on('value', s => {
-        appsCache = s.val() || {};
-        renderStore();
-        renderAdmin();
+  <!-- ==================== SCRIPT 2: FILE 2 REAL ENGINE (FULL UNCORRUPTED) ==================== -->
+  <script>
+    (function(){
+      const formSection = document.getElementById('formSection');
+      const successSection = document.getElementById('successSection');
+      const iconInput = document.getElementById('iconFile');
+      const iconNameDisplay = document.getElementById('icon-name-display');
+      const iconWrapper = document.getElementById('iconWrapper');
+      const form = document.getElementById('apk-form');
+      const overlay = document.getElementById('loadingOverlay');
+      const overlayTitle = document.getElementById('overlayTitle');
+      const overlayDesc = document.getElementById('overlayDesc');
+      const customModal = document.getElementById('customModal');
+      const modalIcon = document.getElementById('modalIcon');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalTextEn = document.getElementById('modalTextEn');
+      const modalTextBn = document.getElementById('modalTextBn');
+      const modalActionBtn = document.getElementById('modalActionBtn');
+      const modalCloseBtn = document.getElementById('modalCloseBtn');
+      const downloadLink = document.getElementById('download-link');
+      const addMoreBtn = document.getElementById('add-more-btn');
+      const htmlUploadsContainer = document.getElementById('html-uploads-container');
+
+      let pageCount = 1;
+      let humanInteractionScore = 0;
+      const countHuman = () => humanInteractionScore++;
+
+      window.addEventListener('click', countHuman, { passive: true });
+      window.addEventListener('keydown', countHuman, { passive: true });
+      window.addEventListener('touchstart', countHuman, { passive: true });
+      window.addEventListener('scroll', countHuman, { passive: true });
+
+      modalCloseBtn.addEventListener('click', () => {
+        customModal.classList.remove('active');
       });
+
+      function showErrorModal(title, textEn, textBn, actionText, actionUrl){
+        modalTitle.textContent = title;
+        modalTextEn.textContent = textEn;
+        modalTextBn.textContent = textBn;
+        modalActionBtn.textContent = actionText || 'OK';
+        modalActionBtn.href = actionUrl || '#';
+        if(!actionUrl || actionUrl === '#'){
+          modalActionBtn.onclick = (e) => { e.preventDefault(); customModal.classList.remove('active'); };
+        }
+        customModal.classList.add('active');
+      }
+
+      // Drag & Drop
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
+        iconWrapper.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); }, false);
+      });
+
+      iconInput.addEventListener('change', function(e){
+        if(e.target.files.length > 0){
+          const file = e.target.files[0];
+          if(file.size > 5 * 1024 * 1024){
+            alert('Maximum icon size is 5MB');
+            iconInput.value = '';
+            return;
+          }
+          iconNameDisplay.textContent = file.name;
+          iconNameDisplay.classList.add('file-selected-state');
+          iconWrapper.style.borderColor = 'rgba(255,255,255,0.4)';
+        } else {
+          iconNameDisplay.textContent = 'Upload PNG Asset';
+          iconNameDisplay.classList.remove('file-selected-state');
+          iconWrapper.style.borderColor = '';
+        }
+      });
+
+      htmlUploadsContainer.addEventListener('change', function(e){
+        if(e.target.classList.contains('htmlFile')){
+          const block = e.target.closest('.html-upload-block');
+          const display = block.querySelector('.file-name-display');
+          if(e.target.files.length > 0){
+            display.textContent = e.target.files[0].name;
+            display.classList.add('file-selected-state');
+            block.querySelector('.htmlWrapper').style.borderColor = 'rgba(0,229,255,0.5)';
+          } else {
+            display.textContent = 'Upload HTML File';
+            display.classList.remove('file-selected-state');
+            block.querySelector('.htmlWrapper').style.borderColor = '';
+          }
+        }
+      });
+
+      addMoreBtn.addEventListener('click', () => {
+        if(pageCount >= 10){
+          alert('Maximum 10 pages allowed');
+          return;
+        }
+        if(pageCount === 1){
+          const firstPageName = document.querySelector('#html-uploads-container .html-upload-block .page-name-group');
+          const firstInput = document.querySelector('#html-uploads-container .html-upload-block .page-name-input');
+          if(firstPageName && firstInput){
+            firstPageName.style.display = 'block';
+            firstInput.required = true;
+          }
+        }
+
+        const newBlock = document.createElement('div');
+        newBlock.className = 'html-upload-block';
+        newBlock.setAttribute('data-index', pageCount);
+        newBlock.style = 'padding: 16px; background: rgba(0, 229, 255, 0.02); border: 1px solid rgba(0, 229, 255, 0.1); border-radius: 12px; margin-bottom: 16px; position: relative;';
+        newBlock.innerHTML = `
+          <button type="button" class="remove-page-btn" style="position: absolute; top: 12px; right: 12px; background: rgba(255, 51, 102, 0.1); border: 1px solid rgba(255, 51, 102, 0.3); color: #ff3366; border-radius: 8px; width: 28px; height: 28px; display: flex; justify-content: center; align-items: center; cursor: pointer;">&times;</button>
+          <div class="form-group page-name-group" style="margin-bottom: 12px;">
+              <label>Page Name</label>
+              <input type="text" class="form-control page-name-input" placeholder="e.g., Dashboard" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+              <label>Source Code (HTML)</label>
+              <div class="file-upload-wrapper htmlWrapper">
+                  <div class="file-upload-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                      </svg>
+                  </div>
+                  <div class="file-upload-text file-name-display">Upload HTML File</div>
+                  <div class="file-upload-subtext">Single .html or .htm format</div>
+                  <input type="file" class="htmlFile" accept=".html,.htm" required>
+              </div>
+          </div>
+        `;
+        htmlUploadsContainer.appendChild(newBlock);
+        pageCount++;
+
+        if(pageCount >= 10) addMoreBtn.style.display = 'none';
+
+        newBlock.querySelector('.remove-page-btn').addEventListener('click', function(){
+          htmlUploadsContainer.removeChild(newBlock);
+          pageCount--;
+          addMoreBtn.style.display = 'inline-flex';
+          if(pageCount === 1){
+            const firstGroup = document.querySelector('#html-uploads-container .html-upload-block .page-name-group');
+            const firstInp = document.querySelector('#html-uploads-container .html-upload-block .page-name-input');
+            if(firstGroup && firstInp){
+              firstGroup.style.display = 'none';
+              firstInp.required = false;
+            }
+          }
+        });
+      });
+
+      function resizeImage(file, maxSize){
+        return new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = e => {
+            const img = new Image();
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              let w = img.width, h = img.height;
+              if(w > maxSize){ h = Math.round((h * maxSize) / w); w = maxSize; }
+              canvas.width = w; canvas.height = h;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, w, h);
+              canvas.toBlob(blob => {
+                const resFile = new File([blob], file.name, { type: 'image/png', lastModified: Date.now() });
+                resolve(resFile);
+              }, 'image/png', 0.9);
+            };
+            img.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // SUBMIT & COMPILE PIPELINE (EXACT FILE 2 SERVER ENGINE)
+      form.addEventListener('submit', async function(e){
+        e.preventDefault();
+
+        const appName = document.getElementById('appName').value.trim();
+        const iconFile = iconInput.files[0];
+        const blocks = document.querySelectorAll('#html-uploads-container .html-upload-block');
+        const htmlFiles = [];
+        const pageNames = [];
+        let hasError = false;
+
+        blocks.forEach(b => {
+          const pName = b.querySelector('.page-name-input')?.value || 'index';
+          const hInput = b.querySelector('.htmlFile');
+          if(hInput && hInput.files.length > 0){
+            pageNames.push(pName);
+            htmlFiles.push(hInput.files[0]);
+          } else {
+            hasError = true;
+          }
+        });
+
+        if(!appName || htmlFiles.length === 0 || hasError){
+          alert('Please fill all required fields');
+          return;
+        }
+
+        overlay.classList.add('active');
+        overlayTitle.textContent = 'Processing Application';
+        overlayDesc.textContent = 'Uploading source assets to compiler node...';
+
+        const formData = new FormData();
+        formData.append('appName', appName);
+        htmlFiles.forEach(f => formData.append('htmlFiles', f));
+        formData.append('pageNames', JSON.stringify(pageNames));
+
+        // Pro settings
+        formData.append('packageName', document.getElementById('pkgName')?.value || 'com.sifat.app');
+        formData.append('appVersion', document.getElementById('appVersion')?.value || '1.0.0');
+        formData.append('versionCode', document.getElementById('versionCode')?.value || '1');
+        formData.append('orientation', document.getElementById('orientation')?.value || 'portrait');
+
+        if(iconFile){
+          overlayTitle.textContent = 'Optimizing Assets';
+          overlayDesc.textContent = 'Resizing icon asset...';
+          const resized = await resizeImage(iconFile, 512);
+          formData.append('appIcon', resized);
+        }
+
+        try {
+          overlayTitle.textContent = 'Connecting Server';
+          overlayDesc.textContent = 'Allocating dedicated build container...';
+
+          const API_KEY = ['F','F','X','_','S','E','C','R','E','T','_','A','P','I','_','K','E','Y','_','2','0','2','6'].join('');
+          const BASE_URL = 'https://sifat5game.onrender.com';
+
+          const res = await fetch(BASE_URL + '/api/build', {
+            method: 'POST',
+            headers: { 'x-api-key': API_KEY },
+            body: formData
+          });
+
+          if(!res.ok){
+            const txt = await res.text();
+            let errMsg = 'Build request failed';
+            try { const parsed = JSON.parse(txt); errMsg = parsed.message || txt; } catch(e){ errMsg = txt; }
+            throw new Error(errMsg);
+          }
+
+          const resData = await res.json();
+          const buildId = resData.buildId || resData.id;
+
+          // Polling status
+          const pollTimer = setInterval(async () => {
+            try {
+              const statusRes = await fetch(BASE_URL + '/api/status/' + buildId, {
+                headers: { 'x-api-key': API_KEY }
+              });
+              if(!statusRes.ok) throw new Error('Status check failed');
+              const sData = await statusRes.json();
+
+              if(sData.status === 'queue'){
+                overlayTitle.textContent = 'Queue Position: ' + (sData.position || '1');
+                overlayDesc.textContent = 'Awaiting available build node.';
+              } else if(sData.status === 'building'){
+                overlayTitle.textContent = 'Compiling APK Package';
+                overlayDesc.textContent = sData.step || 'Running Android AAPT2, D8 and APKSigner...';
+              } else if(sData.status === 'done' || sData.status === 'success'){
+                clearInterval(pollTimer);
+                overlay.classList.remove('active');
+                formSection.style.display = 'none';
+                successSection.style.display = 'flex';
+                downloadLink.href = BASE_URL + '/download/' + buildId + '?key=' + API_KEY;
+                downloadLink.setAttribute('download', appName.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.apk');
+              } else if(sData.status === 'failed'){
+                clearInterval(pollTimer);
+                throw new Error(sData.error || 'Build failed.');
+              }
+            } catch(pollErr){
+              clearInterval(pollTimer);
+              overlay.classList.remove('active');
+              showErrorModal('Error', pollErr.message, 'বিল্ড সার্ভার সংযোগে সমস্যা হয়েছে।', 'Retry', '#');
+            }
+          }, 2000);
+
+        } catch(err){
+          overlay.classList.remove('active');
+          showErrorModal('Server Error', err.message, 'রিয়েল বিল্ড সার্ভার সক্রিয় আছে কিনা চেক করুন।', 'OK', '#');
+        }
+      });
+    })();
+  </script>
+
+  <!-- ==================== SCRIPT 3: PRO UPGRADE PANEL LOGIC ==================== -->
+  <script>
+  (()=>{
+    const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+    const form = $('#apk-form'), name = $('#appName'), icon = $('#iconFile'), preview = $('#livePreview'), pageList = $('#pageList'), drop = $('#dropZone');
+    const stateKey = 'sifat_apk_builder_draft_v2';
+    
+    function save(){
+      const d = {
+        name: name?.value||'',
+        pkg: $('#pkgName')?.value||'',
+        version: $('#appVersion')?.value||'1.0.0',
+        code: $('#versionCode')?.value||'1',
+        orientation: $('#orientation')?.value||'unspecified',
+        js: $('#jsToggle')?.checked,
+        storage: $('#storageToggle')?.checked,
+        links: $('#linksToggle')?.checked
+      };
+      localStorage.setItem(stateKey, JSON.stringify(d));
     }
+    
+    function load(){
+      try{
+        const d = JSON.parse(localStorage.getItem(stateKey)||'{}');
+        for(const [id,val] of [['appName',d.name],['pkgName',d.pkg],['appVersion',d.version],['versionCode',d.code],['orientation',d.orientation]]){
+          const e = $('#'+id); if(e && val !== undefined) e.value = val;
+        }
+        for(const [id,val] of [['jsToggle',d.js],['storageToggle',d.storage],['linksToggle',d.links]]){
+          const e = $('#'+id); if(e && val !== undefined) e.checked = val;
+        }
+      }catch(e){}
+    }
+    
+    function refreshPages(){
+      const blocks = $$('#html-uploads-container .html-upload-block');
+      if(!pageList) return;
+      pageList.innerHTML = '';
+      blocks.forEach((b,i) => {
+        const f = b.querySelector('.htmlFile')?.files?.[0];
+        const n = b.querySelector('.page-name-input')?.value || ('Page '+(i+1));
+        const el = document.createElement('div');
+        el.className = 'page-chip';
+        el.innerHTML = '<span class="page-num">'+(i+1)+'</span><b></b><small></small>';
+        el.querySelector('b').textContent = n;
+        el.querySelector('small').textContent = f ? f.name : 'Not uploaded';
+        pageList.appendChild(el);
+      });
+      if($('#pageCounter')) $('#pageCounter').textContent = blocks.length + ' / 10';
+    }
+    
+    function check(){
+      const has = $$('.htmlFile').some(x => x.files?.length);
+      if($('#checkFile')){
+        $('#checkFile').textContent = (has ? '✓' : '○') + ' HTML';
+        $('#checkFile').classList.toggle('ok', has);
+      }
+      const ok = !!name?.value.trim();
+      if($('#checkName')){
+        $('#checkName').textContent = (ok ? '✓' : '○') + ' App name';
+        $('#checkName').classList.toggle('ok', ok);
+      }
+      if($('#checkStatus')) $('#checkStatus').textContent = has && ok ? 'Ready to build' : 'Waiting for HTML';
+    }
+    
+    function previewFirst(){
+      const f = $$('.htmlFile')[0]?.files?.[0];
+      if(!preview) return;
+      if(!f){
+        preview.srcdoc = '<div style="font-family:sans-serif;padding:30px;text-align:center;color:#667">Upload an HTML file to preview it.</div>';
+        return;
+      }
+      const r = new FileReader();
+      r.onload = () => preview.srcdoc = r.result;
+      r.readAsText(f);
+    }
+    
+    $$('.pro-tab').forEach(btn => btn.addEventListener('click', () => {
+      $$('.pro-tab').forEach(x => x.classList.remove('active'));
+      $$('.pro-tab-content').forEach(x => x.classList.remove('active'));
+      btn.classList.add('active');
+      const target = $('#tab-' + btn.dataset.tab);
+      if(target) target.classList.add('active');
+      if(btn.dataset.tab === 'preview') previewFirst();
+    }));
+    
+    [name, $('#pkgName'), $('#appVersion'), $('#versionCode'), $('#orientation'), $('#jsToggle'), $('#storageToggle'), $('#linksToggle')].filter(Boolean).forEach(e => e.addEventListener('input', save));
+    
+    document.addEventListener('change', e => {
+      if(e.target.matches('.htmlFile, .page-name-input, #iconFile')){
+        refreshPages(); check(); previewFirst(); save();
+      }
+    });
+    
+    $('#refreshPreview')?.addEventListener('click', previewFirst);
+    
+    drop?.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag'); });
+    drop?.addEventListener('dragleave', () => drop.classList.remove('drag'));
+    drop?.addEventListener('drop', e => {
+      e.preventDefault();
+      drop.classList.remove('drag');
+      const files = [...e.dataTransfer.files].filter(f => /\.html?$/i.test(f.name));
+      const inputs = $$('.htmlFile');
+      let slot = inputs.find(x => !x.files.length);
+      if(files[0] && slot){
+        const dt = new DataTransfer();
+        dt.items.add(files[0]);
+        slot.files = dt.files;
+        slot.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+    
+    const mo = new MutationObserver(() => { refreshPages(); check(); });
+    const c = $('#html-uploads-container');
+    if(c) mo.observe(c, { childList: true, subtree: true });
+    
+    form?.addEventListener('submit', () => { save(); refreshPages(); check(); });
+    load();
+    setTimeout(() => { refreshPages(); check(); previewFirst(); }, 200);
+  })();
   </script>
 </body>
 </html>
